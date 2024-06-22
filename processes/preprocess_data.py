@@ -1,4 +1,6 @@
 import math
+import pickle
+
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 
@@ -293,7 +295,7 @@ def extract_exist_months_since_last_delinquency(months_since_last_delinquency):
 
 def column_extraction(df):
     extraction_function = {"meet_credit_policy": [extract_meet_credit_policy, "loan_status"],
-                           "purpose_risk": [extract_asset_type,"purpose"],
+                           "purpose_asset_type": [extract_asset_type,"purpose"],
                            "purpose_essential": [extract_essential_type,"purpose"],
                            "exist_months_since_last_delinquency": [extract_exist_months_since_last_delinquency,"months_since_last_delinquency"]}
 
@@ -305,21 +307,29 @@ def column_extraction(df):
     return df
 
 
-def normalise(final_df):
-    normalised_df = pd.DataFrame()
-    scaler = MinMaxScaler()
-    return normalised_df
+def normalise(df):
+    scaler = MinMaxScaler(feature_range=(-1, 1))
+    for column_name in df.keys():
+        df[column_name] = scaler.fit_transform(df[[column_name]])
+        # Save the scaler to a file
+        with open(f'config/model/{column_name}_scaler.pkl', 'wb') as f:
+            pickle.dump(scaler, f)
+    return df
+
+
+def remove_irrelevant_column(df):
+    column_to_remove =["Unnamed: 0",
+                       "member_id",
+                       "id"]
+    for column in column_to_remove:
+        df.drop(column, inplace=True, axis=1)
+    return df
 
 
 def prepare_data(raw_data) -> pd.DataFrame:
     final_df = column_extraction(raw_data)
     final_df = data_transformation(final_df)
+    final_df = normalise(final_df)
+    final_df = remove_irrelevant_column(final_df)
     final_df.to_csv("data/loan_cleaned_data.csv")
     return final_df
-    """final_df = normalise(final_df)
-    for column_name in normalise_list:
-        new_data_df[column_name] = scaler.fit_transform(new_data_df[[column_name]])
-        # Save the scaler to a file
-        with open(f'config/model/{column_name}_scaler.pkl', 'wb') as f:
-            pickle.dump(scaler, f)
-    return new_data_df"""
