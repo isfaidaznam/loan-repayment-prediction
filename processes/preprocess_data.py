@@ -29,23 +29,31 @@ def transform_employment_length(text):
 
 
 def transform_home_ownership(text):
-    dict = {"own" : 4,
-            "rent" : 3,
-            "mortgage" : 2,
-            "other" : 1}
+    # The values where set based on failure rate that was calculated within 01_data_analysis.py
+    dict = {"own" : 15.58,
+            "rent" : 15.83,
+            "mortgage" : 14.28,
+            "other" : 23.20}
     if text.lower() in dict.keys():
         return dict[text.lower()]
     else:
-        return 0
+        # any other value will set to as "other" home ownership
+        return 23.20
 
 
 def transform_verification_status(text):
-    dict = {"source verified" : 2,
-            "verified" : 1}
-    if text.lower() in dict.keys():
-        return dict[text.lower()]
-    else:
-        return 0
+    try:
+        # The value assignment are based on the arrangement from least to worst failure rate
+        dict = {"source verified" : 14.77,
+                "verified" : 16.80}
+        if text.lower() in dict.keys():
+            return dict[text.lower()]
+        else:
+            # any other value will set to as "Not Verified" home ownership
+            return 14.17
+    except:
+        # any other value will set to as "Not Verified" home ownership
+        return 14.17
 
 
 def transform_date(date_text):
@@ -93,30 +101,26 @@ def transform_loan_status(loan_status):
 
 
 def transform_purpose(purpose):
+    # The values where set based on failure rate that was calculated within 01_data_analysis.py
     try:
-        purpose_value = None
-        dict = {"major_purchase": 0,
-                "other": 1,
-                "debt_consolidation": 2,
-                "credit_card": 3,
-                "small_business": 4,
-                "medical": 5,
-                "wedding": 6,
-                "car": 7,
-                "home_improvement": 8,
-                "educational": 9,
-                "vacation": 10,
-                "house": 11,
-                "moving": 12,
-                "renewable_energy": 13
-                }
-        for p in dict.keys():
-            if p.lower() in purpose.lower():
-                purpose_value = dict[p]
-                break
-        return purpose_value
+        dict = {"major_purchase": 10.49,
+                "other": 17.22,
+                "debt_consolidation": 15.52,
+                "credit_card": 11.58,
+                "small_business": 27.82,
+                "medical": 17.33,
+                "wedding": 11,
+                "car": 11.01,
+                "home_improvement": 13.24,
+                "educational": 21.24,
+                "vacation": 14.72,
+                "house": 16.28,
+                "moving": 16.55,
+                "renewable_energy": 17.58}
+        return dict[purpose.lower()]
     except:
-        return -1
+        # any other values will be treated as "other" purpose
+        return 17.22
 
 def transform_address_state(state):
     """
