@@ -1,5 +1,7 @@
 import pandas as pd
 
+from processes.formating import print_title
+
 
 def print_categorical_analysis(df, column_name):
     list_of_data = df[column_name]
@@ -14,15 +16,9 @@ def print_categorical_analysis(df, column_name):
 
 def print_stats(df):
     try:
-        print("""
-=============================================================
-Class Distribution of Repayment Failure
-=============================================================""")
+        print_title("Class Distribution of Repayment Failure")
         print_categorical_analysis(df, "repay_fail")
-        print("""
-=============================================================
-Strength of Correlation of Features with Repayment Failure
-=============================================================""")
+        print_title("Strength of Correlation of Features with Repayment Failure")
         print(df.corr()["repay_fail"].abs().sort_values(ascending=False))
     except Exception as e:
         print(f"Error displaying Descriptive Analysis: {e}")
