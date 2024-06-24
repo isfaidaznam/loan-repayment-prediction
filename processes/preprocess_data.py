@@ -312,7 +312,7 @@ def normalise(df):
     for column_name in df.keys():
         df[column_name] = scaler.fit_transform(df[[column_name]])
         # Save the scaler to a file
-        with open(f'config/model/{column_name}_scaler.pkl', 'wb') as f:
+        with open(f'config/model/scaler/{column_name}_scaler.pkl', 'wb') as f:
             pickle.dump(scaler, f)
     return df
 
@@ -320,7 +320,8 @@ def normalise(df):
 def remove_irrelevant_column(df):
     column_to_remove =["Unnamed: 0",
                        "member_id",
-                       "id"]
+                       "id",
+                       "loan_status"]
     for column in column_to_remove:
         df.drop(column, inplace=True, axis=1)
     return df
