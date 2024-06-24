@@ -24,8 +24,8 @@ def prepare_train_test_data(data_df):
         pass_df = data_df[data_df["repay_fail"] == min(data_df["repay_fail"])]
 
         # Randomise order
-        fail_df = fail_df.sample(frac=1).reset_index(drop=True)
-        pass_df = pass_df.sample(frac=1).reset_index(drop=True)
+        fail_df = fail_df.sample(frac=1, random_state=7).reset_index(drop=True)
+        pass_df = pass_df.sample(frac=1, random_state=7).reset_index(drop=True)
 
         # Get index to separate train and test
         split_index_fail = int(len(fail_df) * train_test_split / 100)
