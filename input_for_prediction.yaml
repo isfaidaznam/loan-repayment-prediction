@@ -1,0 +1,33 @@
+loan_amount: 6925
+funded_amount: 6925
+funded_amount_investors: 6900
+term: 36 months
+interest_rate: 9.62
+installment: 222.22
+employment_length: < 1 year
+home_ownership: RENT
+annual_income: 78000
+verification_status: Verified
+issue_date: 12/1/2010
+loan_status: Charged Off
+purpose: debt_consolidation
+zip_code: 031xx
+address_state: NH
+debt_to_income_ratio: 15.4
+no_delinquency_2yrs: 0
+earliest_credit_line: 11/1/2003
+inquiries_last_6mths: 2
+months_since_last_delinquency: 43
+no_open_accounts: 17
+public_records: 0
+revolving_balance: 7297
+revolving_utillization: 34.30%
+no_total_account: 22
+total_payment: 6108.79
+total_payment_investors: 6086.77
+total_received_principal: 4994.45
+total_received_interest: 995.23
+last_payment_date: 3/1/2013
+last_payment_amnt: 222.22
+next_payment_date: NA
+last_credit_pull_date: 8/1/2013
