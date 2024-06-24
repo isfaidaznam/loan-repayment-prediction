@@ -4,6 +4,9 @@ import pickle
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 
+from config.config import Config_Predict
+
+
 def read_data() -> pd.DataFrame:
     try:
         data_df = pd.read_excel("data/loan_default_data.xlsx")
@@ -327,10 +330,30 @@ def remove_irrelevant_column(df):
     return df
 
 
-def prepare_data(raw_data) -> pd.DataFrame:
+def preprocess_data(raw_data):
     final_df = column_extraction(raw_data)
     final_df = data_transformation(final_df)
     final_df = normalise(final_df)
-    final_df = remove_irrelevant_column(final_df)
+    return final_df
+
+def preprocess_data_predict(raw_data):
+    final_df = column_extraction(raw_data)
+    final_df = data_transformation(final_df)
+
+    # Normalised
+    for column_name in final_df.keys():
+        scaler_path = f'config/model/scaler/{column_name}_scaler.pkl'
+        with open(scaler_path, 'rb') as f:
+            scaler = pickle.load(f)
+        final_df[column_name] = scaler.transform(final_df[[column_name]])
+
+    # Sort columns for model input
+    column_order = Config_Predict().ML_TRAINING["INPUT"]
+    final_df = final_df.loc[:, column_order]
+    return final_df
+
+
+def prepare_data(raw_data) -> pd.DataFrame:
+    final_df = preprocess_data(raw_data)
     final_df.to_csv("data/loan_cleaned_data.csv")
     return final_df
