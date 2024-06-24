@@ -11,5 +11,8 @@ if __name__=="__main__":
         print("Performing Data preparations...")
         processed_data = prepare_data(raw_data)
         print_stats(processed_data)
+        print("Performing Train Test Data Spliting...")
+        prepare_train_test_data(processed_data)
+        print("Data preparation completed.")
     except ValueError as e:
         raise ValueError(f"Unexpected error occurred: {e}") from e
