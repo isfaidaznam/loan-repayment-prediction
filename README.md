@@ -280,6 +280,10 @@ The 10  least correlations are as follows:
 38. employment_length                      (0.005634)
 39. revolving_utillization                 (0.002154)
 
+## 2.5 How to Initiate Data Anaylsis
+
+To initiate data analysis process, simply run the `01_data_analysis.py` file.
+
 ## 3.0 Train Test Data Splitting
 
 The dataset is split into 80:20. The 80% of the dataset is used as the training dataset, while the other 20% is used for testing dataset.
@@ -294,10 +298,94 @@ The training dataset is created by taking the first 80% of the samples from each
 
 The training and testing dataset are as below:
 - Train dataset
-  - `repay_fail = 0`: 4663 (50%)
-  - `repay_fail = 1`: 4663 (50%)
+  - `repay_fail = 0`: 4,663 (50.00%)
+  - `repay_fail = 1`: 4,663 (50.00%)
 - Test dataset
-  - `repay_fail = 0`: 6531 (84.85%)
-  - `repay_fail = 1`: 1166 (15.15%)
+  - `repay_fail = 0`: 6,531 (84.85%)
+  - `repay_fail = 1`: 1,166 (15.15%)
 
 ## 4.0 AI Training and Testing
+
+In this project, 2 AI/ML algorithms were used to develop the model.
+- Artificial Neural Network (ANN)
+- K-Nearest Neighbors (K-NN)
+
+These 2 distinct algorithm is chosen due their key differences.
+
+1.  Simplicity vs Complexity
+   - The 2 algorithm have different complexity levels. 
+      K-NN is way more simple than ANN, which ANN has much more parameters to do fine-tuning.
+   - The difficulty to develop a K-NN model is impervious to complex problems due to how it works. Unlike ANN, a lot of parameter needs to be fine-tuned to be able to performed on much more complex problems.
+2. Lightweight vs Heavy duty
+   - The 2 algorithm have different performance requirements. ANN's hardware requirements to develop is much higher than K-NN.
+   - Furthermore, higher hardware requirements leads to higher time consumptions to train. Some prefer specialized hardware such as a GPU to train ANN on complex problems.
+3. Prediction Performance
+   - ANN may be complex, heavy duty, and time-consuming. But ANN has higher potential to perform on more complex problems.
+   - Unlike K-NN, ANN can produce another layer of hidden nodes which has the capability to identify patterns and prioritise the most relevant pattern. Usually, these are called Deep Learning algorithm, which feature selection process often can be ignored.
+
+### 4.1 Artificial Neural Network (ANN)
+
+### 4.1.1 Model Architecture
+
+Layer 1  : Dense layer  , 32 nodes, relu activation
+Layer 2  : Dense layer  , 33 nodes, relu activation
+Layer 3  : Dense layer  , 33 nodes, sigmoid activation
+Layer 4  : Dense layer  , 1 nodes, sigmoid activation
+
+### 4.1.2 Training Parameter
+
+- 10 epoch
+- adam optimizer
+- mean absolute error loss function
+
+
+### 4.1.3 Training Curve
+
+Before reading the Graphs below, note that Training dataset is the data thats the AI Model is training on, while validation date set is 
+the data thats not been seen by the AI Model during learning, but only to monitor what would it scored on the testing dataset.
+
+![Accuracy_Curves](trained_model/ann_model/Accuracy_Curves.jpg)
+
+The accuracy curve converges on about 46% accuracy, at 2 epoch. The training stops several epoch after it converged. Therefor, the trained model does no over fit. 
+Over fitting should be avoided due to avoid over emphasis on outliers. This could lead to misclassified classes on new unseen data. 
+
+![Loss_Curves](trained_model/ann_model/Loss_Curves.jpg)
+
+Similar to Accuracy curves, The training stops several epoch after training loss converged. 
+Training and validation loss is the measure of how different the overall prediction value and the actual values. 
+The lower the loss, the closer the predictions.
+
+And epoch of 100 had been done, but the accuracy curve and the loss curve shows that they have already converged at the early epoch.
+This shows that the Model has been over fitting. Therefore, 10 epoch is all we needed to train on this dataset.
+
+### 4.1.4 Performance
+
+Confusion Matrix
+- Actual 0
+  - Predicted 0: 6,506
+  - Predicted 1: 25
+- Actual 1
+  - Predicted 0: 86
+  - Predicted 1: 1,080
+
+True Positive  : 1,080
+
+True Negative  : 6,506
+
+False Positive  : 25
+
+False Negative  : 86
+
+Accuracy : 98.56%
+
+Sensitivity: 92.62%
+
+Looking into the performance, Overall results looks good. The key metric to consider is the Sensitivity. 
+Sensitivity shows how much positive can the model predicted correctly. 
+92.62% Sensitivity implies that the Model is good at detecting Failure repayment class. 
+In leman terms, 92.62% of Failure repayment where able to predicted.
+
+The accuracy does not really helps in this case due to the fact that the dataset is highly imbalance. Recall that the 
+distribution of `fail_repay = 0` is 84.85%. which means, if the model only predicts `fail_repay = 0`, the accuracy would be 84.85%.
+This would have 'high accuracy' but unable to be used to predict failure repayments. 
+However, high accuracy means that false positive and false negative in a production environment will rarely occur.
