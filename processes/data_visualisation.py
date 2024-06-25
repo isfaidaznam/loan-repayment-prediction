@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 from matplotlib import pyplot as plt
 
@@ -18,6 +20,8 @@ def generate_line_graph(df, column_name):
         plt.ylabel('Failure Rate (%)')
         plt.title(f'Failure Rate by {column_name.replace("_"," ").title()}')
         plt.grid(True)
+        if not os.path.exists("data/analysis"):
+            os.makedirs("data/analysis")
         plt.savefig(f'data/analysis/failure_rate_by_{column_name}.jpg', dpi=300, bbox_inches='tight')
         plt.close()
     except Exception as e:
