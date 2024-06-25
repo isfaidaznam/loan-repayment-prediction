@@ -41,7 +41,7 @@ ML_TRAINING:
     - revolving_utillization
 KNN_TRAINING:
   TRAIN_SPLIT: 80
-  N_NEIGHBOR: 5
+  N_NEIGHBOR: 7
   RANDOMNESS: False
   INPUT:
     - total_received_principal
