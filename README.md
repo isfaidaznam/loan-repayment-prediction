@@ -57,7 +57,7 @@ EDA was conducted to understand the relationships between the features and the t
 The target variable "repay_fail" has 2 distinct values, 1 for failure and 0 for success. 
 Unfortunately, the distribution are highly imbalanced. 
 
-![Class Distribution](data/analysis/repay_fail_distribution.jpg){: width="500px"}
+![Class Distribution](data/analysis/repay_fail_distribution.jpg){: .max-width-500}
 
 About 15.15% of the dataset are under failure class. 
 These may pose difficulties during AI training. 
