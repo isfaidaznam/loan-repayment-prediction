@@ -1,21 +1,31 @@
 import os
-
+import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+from processes.preprocess_data import transform_employment_length
 
 
 def generate_line_graph(df, column_name):
     try:
         print(f"Generating Line Graph for {column_name}...")
         temp_df = df.copy()
-        temp_df[f'{column_name}_binned'] = pd.cut(temp_df[column_name], bins=20)
-
-        # group by the binned column_name and calculate the mean failure rate
-        temp_df = temp_df.groupby(f'{column_name}_binned', observed=True)['repay_fail'].mean().reset_index()
         temp_df = temp_df.rename(columns={'repay_fail': 'failure_rate'})
         temp_df['failure_rate'] = temp_df['failure_rate'] * 100
 
-        plt.plot(temp_df[f'{column_name}_binned'].apply(lambda x: x.mid), temp_df['failure_rate'], color='red')
+        if column_name == "employment_length":
+            temp_df[column_name] = [transform_employment_length(s) for s in temp_df[column_name]]
+            # Filter out null values (0)
+            temp_df[column_name] = [None if s == 0 else s for s in temp_df[column_name]]
+
+        # Bining
+        column_for_x_axis = f'{column_name}_binned'
+        temp_df[column_for_x_axis] = pd.cut(temp_df[column_name], bins=20)
+        temp_df = temp_df.groupby(column_for_x_axis, observed=True)['failure_rate'].mean().reset_index()
+
+        plt.plot(temp_df[column_for_x_axis].apply(lambda x: x.mid), temp_df['failure_rate'], color='red', marker = "o")
+        for i, j in zip(temp_df[column_for_x_axis].apply(lambda x: x.mid), temp_df['failure_rate']):
+            plt.annotate(f"{j:.2f}", xy=(i, j))
+
         plt.xlabel(column_name.replace("_"," ").title())
         plt.ylabel('Failure Rate (%)')
         plt.title(f'Failure Rate by {column_name.replace("_"," ").title()}')
@@ -64,8 +74,25 @@ def generate_bar_graph(df, column_name):
         print(f"Error generating bar graph: {e}")
 
 
+def generate_class_distribution(df, column_name):
+    try:
+        print(f"Generating Pie Chart for {column_name} distribution...")
+        column_counts = df[column_name].value_counts()
+
+        plt.figure(figsize=(10, 8))
+        plt.pie(column_counts.values, labels=column_counts.index, autopct='%1.1f%%')
+
+        plt.title(f'Distribution of {column_name.replace("_"," ").title()}')
+        plt.savefig(f'data/analysis/{column_name}_distribution.jpg', dpi=300, bbox_inches='tight')
+        plt.close()
+    except Exception as e:
+        print(f"Error generating pie chart for {column_name}: {e}")
+
+
 def generate_data_visual(df):
     try:
+        for column_name in ["repay_fail"]:
+            generate_class_distribution(df,column_name)
         for column_name in ["loan_amount",
                             "interest_rate",
                             "installment",
@@ -74,12 +101,12 @@ def generate_data_visual(df):
                             "no_delinquency_2yrs",
                             "inquiries_last_6mths",
                             "months_since_last_delinquency",
+                            "employment_length",
                             "no_open_accounts",
                             "no_total_account"]:
             generate_line_graph(df,column_name)
 
         for column_name in ["term",
-                            "employment_length",
                             "home_ownership",
                             "verification_status",
                             "purpose",

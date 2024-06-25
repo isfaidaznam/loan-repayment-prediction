@@ -220,6 +220,11 @@ def data_transformation(df):
 
 
 def extract_meet_credit_policy(loan_status):
+    """
+        - 1 represents 'meet the credit policy'
+        - 0.5 represents ambiguous, unknown or not sure.
+        - 0 represents 'does not meet the credit policy'
+    """
     try:
         loan_status = loan_status.lower()
         if "does not meet the credit policy" in loan_status:
