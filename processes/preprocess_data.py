@@ -39,7 +39,8 @@ def transform_home_ownership(text):
     dict = {"own" : 15.58,
             "rent" : 15.83,
             "mortgage" : 14.28,
-            "other" : 23.20}
+            "other" : 23.20,
+            "none" : 25.00}
     if text.lower() in dict.keys():
         return dict[text.lower()]
     else:
