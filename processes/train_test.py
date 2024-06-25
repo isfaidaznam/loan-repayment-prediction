@@ -1,12 +1,18 @@
+import os
+import shutil
+
 import numpy as np
 import pandas as pd
 import yaml
 import tensorflow as tf
+from joblib import dump
 from keras import Sequential
 from keras.src.layers import Dense
 from matplotlib import pyplot as plt
 from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+
 from config.config import Config
 from processes import process_confusion_matrix
 from processes.data_visualisation import export_accuracy_curve, export_loss_curve
@@ -20,18 +26,20 @@ def get_train_test_data():
 
 
 class Model_stats:
-    def __init__(self, config_file='ann_model/model_performance.yaml'):
+    def __init__(self, model_name=None):
+        config_file=f'trained_model/{model_name.lower()}_model/model_performance.yaml'
         with open(config_file, 'r') as f:
             self.__dict__ = yaml.safe_load(f)
 
 
-def export_model_if_better(model, confusion_matrix_df, history):
+def export_model_if_better(model, confusion_matrix_df, model_name, history):
+    model_name = str(model_name).lower()
     intent = "a"
     try:
         newly_trained_accuracy = process_confusion_matrix.get_accuracy(confusion_matrix_df)
         newly_trained_sensitivity = process_confusion_matrix.get_sensitivity(confusion_matrix_df)
-        prev_accuracy = Model_stats().ANN_PERFORMANCE["ACCURACY"]
-        prev_sensitivity = Model_stats().ANN_PERFORMANCE["SENSITIVITY"]
+        prev_accuracy = Model_stats(model_name=model_name.lower()).MODEL_PERFORMANCE["ACCURACY"]
+        prev_sensitivity = Model_stats(model_name=model_name.lower()).MODEL_PERFORMANCE["SENSITIVITY"]
 
         print_title("Performance Comparison/Improvements")
         print(f"Accuracy\t: {prev_accuracy:2%} --> {newly_trained_accuracy:2%}")
@@ -49,15 +57,15 @@ def export_model_if_better(model, confusion_matrix_df, history):
         while intent.lower() not in "yn":
             intent = input("Overwrite model ? [y/n]\t:")[0]
     except:
-        print("Unable to read performance value from 'trained_model/ann_model/model_performance.yaml'.")
+        print(f"Unable to read performance value from 'trained_model/{model_name}_model/model_performance.yaml'.")
         while intent.lower() not in "yn":
             intent = input("Overwrite model ? [y/n]\t:")[0]
 
     if intent.lower() == "y":
         print("\nSaving newly trained model...")
         data = {
-            'ANN_PERFORMANCE': {
-                'CONFUSION_METRIX': {
+            f'MODEL_PERFORMANCE': {
+                'CONFUSION_MATRIX': {
                     'TRUE_POSITIVE': process_confusion_matrix.get_tp(confusion_matrix_df),
                     'TRUE_NEGATIVE': process_confusion_matrix.get_tn(confusion_matrix_df),
                     'FALSE_POSITIVE': process_confusion_matrix.get_fp(confusion_matrix_df),
@@ -67,43 +75,53 @@ def export_model_if_better(model, confusion_matrix_df, history):
                 'SENSITIVITY': process_confusion_matrix.get_sensitivity(confusion_matrix_df)
             }
         }
-        with open('trained_model/ann_model/model_performance.yaml', 'w') as f:
+        # Saving Model Performance file
+        if not os.path.exists(f"trained_model/{model_name}_model/"):
+            os.makedirs(f"trained_model/{model_name}_model")
+        with open(f'trained_model/{model_name}_model/model_performance.yaml', 'w') as f:
             yaml.dump(data, f, indent=4)
-        print("Model Performance stored in 'trained_model/ann_model/model_performance.yaml'")
+        print(f"Model Performance stored in 'trained_model/{model_name}_model/model_performance.yaml'")
 
-        model.save('trained_model/ann_model/predict_loan_repay_fail_model.keras')
-        print("Trained Model Performance stored in 'trained_model/ann_model/predict_loan_repay_fail_model.keras'")
+        # saving Model
+        if model_name.lower() == "ann":
+            file_dir = f'trained_model/{model_name}_model/predict_loan_repay_fail_model.keras'
+            model.save(file_dir)
+        elif model_name.lower() == "knn":
+            file_dir = f'trained_model/{model_name}_model/predict_loan_repay_fail_model.joblib'
+            dump(model, file_dir)
+        print(f"Trained Model stored in '{file_dir }'")
 
-        import shutil
-        shutil.copyfile("config/config.yaml", "trained_model/ann_model/config.yaml")
+        # Saving Model Config
+        shutil.copyfile("config/config.yaml", f"trained_model/{model_name}_model/config.yaml")
 
-        export_accuracy_curve(history)
-        export_loss_curve(history)
+        # Saving Training curve
+        if history:
+            export_accuracy_curve(history)
+            export_loss_curve(history)
 
 
 
 
 
 def train_neural_network(train_df, test_df):
+    # Setup
     if Config().ML_TRAINING["RANDOMNESS"]:
         np.random.seed(42)
         tf.random.set_seed(42)
-    # Get the column order from the config file
     column_order = Config().ML_TRAINING["INPUT"]
     layer_config = Config().ML_TRAINING["HIDDEN_LAYER"]
     total_input_node = len(column_order)
 
-    # Reorder the columns of X
     X = train_df.loc[:, column_order]
     y = train_df['repay_fail']
     X_test = test_df.loc[:, column_order]
     Y_test = test_df['repay_fail']
 
-    # Split the data into training and validation sets
+    # Train
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, shuffle=Config().ML_TRAINING['RANDOMNESS'],
                                                       random_state=42)
 
-    print_title("Neural Network Training and Testing")
+    print_title("Artificial Neural Network Training and Testing")
     model = Sequential()
     model.add(Dense(total_input_node, activation='relu', input_shape=(X.shape[1],)))
     for l in layer_config:
@@ -121,6 +139,7 @@ def train_neural_network(train_df, test_df):
                         batch_size=32,
                         validation_data=(X_val, y_val))
 
+    # Evaluation
     y_pred = model.predict(X_test)
 
     result_df = pd.DataFrame()
@@ -141,4 +160,47 @@ def train_neural_network(train_df, test_df):
     print("\nAccuracy\t:", accuracy)
     print("Sensitivity\t:", sensitivity)
 
-    export_model_if_better(model, conf_df, history)
+    export_model_if_better(model, conf_df, "ann", history)
+
+def train_k_nearest_neighbor(train_df, test_df):
+    # Setup
+    if Config().KNN_TRAINING["RANDOMNESS"]:
+        np.random.seed(42)
+        tf.random.set_seed(42)
+    column_order = Config().KNN_TRAINING["INPUT"]
+
+    X = train_df.loc[:, column_order]
+    y = train_df['repay_fail']
+    X_test = test_df.loc[:, column_order]
+    Y_test = test_df['repay_fail']
+
+    X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, shuffle=Config().KNN_TRAINING['RANDOMNESS'],
+                                                      random_state=42)
+
+    # Train
+    print_title("K-Nearest Neighbors Training and Testing")
+    knn = KNeighborsClassifier(n_neighbors=Config().KNN_TRAINING["N_NEIGHBOR"])
+    knn.fit(X_train, y_train)
+
+    # Evaluation
+    y_pred = knn.predict(X_test)
+
+    result_df = pd.DataFrame()
+    result_df["target"] = Y_test
+    result_df["target_binary"] = (Y_test > 0).astype(int)
+    result_df["raw_predict"] = y_pred
+    result_df["predict_binary"] = (y_pred > 0.5).astype(int)
+
+    conf_matrix = confusion_matrix(result_df["target_binary"],
+                                   result_df["predict_binary"])
+    conf_df = pd.DataFrame(conf_matrix, index=['Actual 0', 'Actual 1'], columns=['Predicted 0', 'Predicted 1'])
+
+    print_title("Training and Testing Result")
+    print("\nConfusing Matrix\t:\n", conf_df)
+
+    accuracy = accuracy_score(result_df["target_binary"], result_df["predict_binary"])
+    sensitivity = process_confusion_matrix.get_sensitivity(conf_df)
+    print("\nAccuracy\t:", accuracy)
+    print("Sensitivity\t:", sensitivity)
+
+    export_model_if_better(knn, conf_df, "knn", None)

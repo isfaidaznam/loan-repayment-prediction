@@ -39,3 +39,40 @@ ML_TRAINING:
     - no_open_accounts
     - employment_length
     - revolving_utillization
+KNN_TRAINING:
+  TRAIN_SPLIT: 80
+  N_NEIGHBOR: 5
+  RANDOMNESS: False
+  INPUT:
+    - total_received_principal
+    - total_payment
+    - total_payment_investors
+    - last_payment_amnt
+    - interest_rate
+    - term
+    - inquiries_last_6mths
+    - purpose
+    - meet_credit_policy
+    - public_records
+    - purpose_essential
+    - loan_amount
+    - debt_to_income_ratio
+    - funded_amount
+    - annual_income
+    - exist_months_since_last_delinquency
+    - purpose_asset_type
+    - verification_status
+    - home_ownership
+    - months_since_last_delinquency
+    - address_state
+    - no_total_account
+    - installment
+    - no_delinquency_2yrs
+    - zip_code
+    - revolving_balance
+    - total_received_interest
+    - earliest_credit_line
+    - funded_amount_investors
+    - no_open_accounts
+    - employment_length
+    - revolving_utillization
