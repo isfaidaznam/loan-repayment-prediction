@@ -4,6 +4,7 @@ import yaml
 import tensorflow as tf
 from keras import Sequential
 from keras.src.layers import Dense
+from matplotlib import pyplot as plt
 from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.model_selection import train_test_split
 from config.config import Config
@@ -27,19 +28,33 @@ class Model_stats:
 def export_model_if_better(model, confusion_matrix_df, history):
     intent = "a"
     try:
+        newly_trained_accuracy = process_confusion_matrix.get_accuracy(confusion_matrix_df)
+        newly_trained_sensitivity = process_confusion_matrix.get_sensitivity(confusion_matrix_df)
+        prev_accuracy = Model_stats().ANN_PERFORMANCE["ACCURACY"]
         prev_sensitivity = Model_stats().ANN_PERFORMANCE["SENSITIVITY"]
-        print(f"Previous Model Sensitivity\t:{prev_sensitivity}")
-    except:
-        print("Unable to read sensitivity value from 'ann_model/model_performance.yaml'.")
-        intent = "a"
+
+        print_title("Performance Comparison/Improvements")
+        print(f"Accuracy\t: {prev_accuracy:2%} --> {newly_trained_accuracy:2%}")
+        print(f"Sensitivity\t: {prev_sensitivity:2%} --> {newly_trained_sensitivity:2%}")
+
+        score = []
+        if newly_trained_sensitivity > prev_sensitivity:
+            score.append("Sensitivity")
+        if newly_trained_accuracy > prev_accuracy:
+            score.append("Accuracy")
+
+        if len(score) >= 1:
+            print(f"The newly trained model has better {" and ".join(score)} score...")
+
         while intent.lower() not in "yn":
             intent = input("Overwrite model ? [y/n]\t:")[0]
-        if intent.lower() == "y":
-            prev_sensitivity = 0
+    except:
+        print("Unable to read performance value from 'ann_model/model_performance.yaml'.")
+        while intent.lower() not in "yn":
+            intent = input("Overwrite model ? [y/n]\t:")[0]
 
-    if newly_trained_sensitivity > prev_sensitivity:
-        print("The newly trained model has better Sensitivity score...")
-        print("Saving newly trained model...")
+    if intent.lower() == "y":
+        print("\nSaving newly trained model...")
         data = {
             'ANN_PERFORMANCE': {
                 'CONFUSION_METRIX': {
@@ -88,14 +103,14 @@ def train_neural_network(train_df, test_df):
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, shuffle=Config().ML_TRAINING['RANDOMNESS'],
                                                       random_state=42)
 
-    # Create and train neural network ann_model
+    print_title("Neural Network Training and Testing")
     model = Sequential()
     model.add(Dense(total_input_node, activation='relu', input_shape=(X.shape[1],)))
     for l in layer_config:
         act_funct = list(l.keys())[0].lower()
         num_of_node = l[list(l.keys())[0]]
         model.add(Dense(num_of_node, activation=act_funct))
-    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+    model.compile(loss='mean_absolute_error', optimizer='adam', metrics=['accuracy'])
     print(model.summary())
 
     # Model Training
@@ -117,12 +132,13 @@ def train_neural_network(train_df, test_df):
     conf_matrix = confusion_matrix(result_df["target_binary"],
                                    result_df["predict_binary"])
     conf_df = pd.DataFrame(conf_matrix, index=['Actual 0', 'Actual 1'], columns=['Predicted 0', 'Predicted 1'])
+
+    print_title("Training and Testing Result")
     print("\nConfusing Matrix\t:\n", conf_df)
 
-    # Calculate the accuracy and others
     accuracy = accuracy_score(result_df["target_binary"], result_df["predict_binary"])
     sensitivity = process_confusion_matrix.get_sensitivity(conf_df)
     print("\nAccuracy\t:", accuracy)
     print("Sensitivity\t:", sensitivity)
 
-    export_model_if_better(model, conf_df)
+    export_model_if_better(model, conf_df, history)
