@@ -47,8 +47,116 @@ The list of generated column are as below, along with their decriptions
    - Reason of extraction: 'months_since_last_delinquency' column does not have any appropriate value for Null values. Setting the Null value to 0 would be misleading. 0 may indicate zero delinquency, instead of unknown.
 
 #### Transformation
+
+1. Transform Categorical Numeric Data into Numerical Data
+
+For this transformation, it converts the categorical data into numerical data where possible. 
+The "Categorical Numeric Data" refers to numeric scale that was stored as a categorical values.
+For example, the 'term' column is a categorical data that has 2 values, "36 months" and "60 months". 
+All letters and symbols will be removed. 
+Hence, the "36 months" will transformed into "36".
+This method is future-proof where it is ready for any new term, which will somehow be implemented, such as "84 months", will be able to be process without errors.
+
+With some form of variations to handle each column's different needs, this kind of transformation will be applied to the following column:
+- term
+- employment_length
+- revolving_utillization
+
+2. Transform Non-Ordinal Categorical data into Numerical Data
+
+For this transformation, it converts Ordinal data into numerical data using various methods. 
+The "Non-Ordinal Categorical data" refers to categorical data that has no clear linear order.
+For example, the 'home_ownership' column is a categorical data that has multiple values, such as "own", "rent", "mortgage", "other" and "none". 
+Another extreme example is the "purpose" column. the values are vast and seems to be have a multi-dimensional relationship.
+Ranging from "car" to "home_improvement", "educational" to "small_business", and "major_purchase" to "debt_consolidation".
+These have no clear linear logical order. The "home_ownership" can be ordered in terms of how wealthy the person is.
+If we were to sort them from "None" to "Own", the "Mortgage" and "Other" doesn't seems to fit.
+
+Sorting them in terms of risk allows the model to understand the categorical data in a numerical format.
+Each category is assigned a numerical value based on its failure rate, which was calculated in the data analysis phase.
+These method is much like vectoring the categories into a their own unique vectors, then decreased the dimensionality into 1 dimension that is important to predict the failure repayment, which is the risk dimension. 
+
+With some form of variations to handle each column's different needs, this kind of transformation will be applied to the following column:
+- home_ownership 
+- verification_status 
+- purpose
+
+3. Transform Date Data into Numerical Data
+
+For this transformation, it converts date data into numerical data using the timestamp method.
+The purpose of this is to allows the model to understand the relation of a date. 
+The model will understood that "12 Jan 2024" is further forward than "6 May 2022" much like the number 500 is further away from 200. 
+
+These transformation were applied on all date type columns such as the following:
+- issue_date
+- earliest_credit_line
+- last_payment_date
+- next_payment_date
+- last_credit_pull_date
+
+However, all these column were removed at the final stage before training the model. 
+These may not be relevant as the question of 'when' did the person pay or 'when' is the issue date and other, may not effect the failure repayment.
+
+Furthermore, including date data in the model may not be relevant for future predictions, as the model would need to account for temporal trends and seasonality, which could add unnecessary complexity. 
+By removing these columns, we can focus on the underlying relationships between the borrower's characteristics and loan features, and build a more robust and generalizable model.
+
+4. Transform Zip Code Data into Numerical Data
+
+For this transformation, it converts zip code data into numerical data by extracting the first three digits of the zip code. 
+zipcode usually not being used for prediction task.
+However, each region consist of different types of populations with variety of portions.
+Hence, the data may be relevant in predicting the repayment failure.
+
+Additionally, zipcodes can be sorted as a numerical scale.
+Generally, zipcode of 43100 is nearby to zipcode 43100 physically.
+Hence, the 'zip_code' column is converted into a numerical value.
+
+5. Transform Address State Data into Numerical Data
+
+For this transformation, it converts address state data into numerical data using a base 26 conversion method. 
+Address state such as "AL" will be treated as a base 24 digit.
+The symbol A represents the value 1, B represents 2, C represents 3, and so on.
+This type of transformation converts these 'base 24' digit into base 10 digit.
+Do note that base 10 digits are the ones we are using daily.
+
+The limitation of this method is the lack of relations between the transformed values.
+Unlike converting zipcode, the address state does not represent any physical relation to one another.
+For example, address code "KJ" does not sit next to "KK".
+The 'address_state' column is converted into a numerical value, solely to be able to be process further.
+Zipcodes may have more correlations than address state.
+
 #### Handling Missing Value
+
+1. Handling Missing Value in Numeric data
+
+Generally, all numeric values that will not make sense to have a negative number will be assign to -1. This value will represent unkown.
+This method applies to columns including, but not limited to:
+- loan_amount
+- funded_amount
+- funded_amount_investors
+- interest_rate
+- installment
+- annual_income
+- no_delinquency_2yrs
+- no_open_accounts
+- public_records
+
+2. Handling Missing Value in Categorical Data
+
+Categorical data that have a defined "other" categories such as "home_ownership" column will be use as an assignment for missing values.
+This is due to the unknown nature of the category "other" where the unknown value dimmed fit for the description.
+
+With some form of variations to handle each column's different needs, this kind of handling missing values will be applied to the following column:
+- home_ownership : Missing values will be treated as "other"
+- verification_status : Missing values will be treated as "Not Verified"
+- purpose : Missing values will be treated as "other"
+
 #### Normalisation
+
+After feature extraction, transformation, and handling missing data, all values in all column are now in numeric values.
+The variety of range of each columns are vast. 
+Some reaches 6,000,000 some are negative numbers. 
+Normalizing the values into a (-1,1) range is used on all columns.
 
 ### 1.1.3 Exploratory Data Analysis (EDA)
 EDA was conducted to understand the relationships between the features and the target variable. The following insights were gained:
@@ -57,7 +165,7 @@ EDA was conducted to understand the relationships between the features and the t
 The target variable "repay_fail" has 2 distinct values, 1 for failure and 0 for success. 
 Unfortunately, the distribution are highly imbalanced. 
 
-![Class Distribution](data/analysis/repay_fail_distribution.jpg){: style="max-width: 500px;"}
+![Class Distribution](data/analysis/repay_fail_distribution.jpg)
 
 About 15.15% of the dataset are under failure class. 
 These may pose difficulties during AI training. 
