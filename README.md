@@ -3,12 +3,12 @@
 
 This project aims to develop an AI/ML model that can predict whether existing borrowers will fail to repay their loans. The model will be trained on a historical dataset of borrowers, their features/characteristics, and whether they've failed to repay their loan.
 
-## 1.1 Dataset Analysis
-### 1.1.1 Initial Data Inspection
+## 2.0 Dataset Analysis
+### 2.1 Initial Data Inspection
 
-The provided dataset contains a whooping 38,480 total number of unique rows and 36 columns. The target variable is "repay_fail", which indicates whether the borrower failed to repay the loan.
+The provided dataset contains a whooping 38,480 total number of unique rows and 36 columns. The target variable is `repay_fail`, which indicates whether the borrower failed to repay the loan.
 
-### 1.1.2 Data Preprocessing
+### 2.2 Data Preprocessing
 
 Before begin to train the AI models, data preprocessing needs to be done. In this project, 4 main data processing steps had be done.
 
@@ -17,7 +17,7 @@ Before begin to train the AI models, data preprocessing needs to be done. In thi
 - Handling Missing Value
 - Normalisation
 
-#### Feature Extraction
+#### 2.2.1 Feature Extraction
 
 The list of generated column are as below, along with their decriptions
 
@@ -46,7 +46,7 @@ The list of generated column are as below, along with their decriptions
    - 0 represents no delinquency
    - Reason of extraction: 'months_since_last_delinquency' column does not have any appropriate value for Null values. Setting the Null value to 0 would be misleading. 0 may indicate zero delinquency, instead of unknown.
 
-#### Transformation
+#### 2.2.2 Transformation
 
 1. Transform Categorical Numeric Data into Numerical Data
 
@@ -125,7 +125,7 @@ For example, address code "KJ" does not sit next to "KK".
 The 'address_state' column is converted into a numerical value, solely to be able to be process further.
 Zipcodes may have more correlations than address state.
 
-#### Handling Missing Value
+#### 2.2.3 Handling Missing Value
 
 1. Handling Missing Value in Numeric data
 
@@ -151,29 +151,39 @@ With some form of variations to handle each column's different needs, this kind 
 - verification_status : Missing values will be treated as "Not Verified"
 - purpose : Missing values will be treated as "other"
 
-#### Normalisation
+#### 2.2.4 Normalisation
 
 After feature extraction, transformation, and handling missing data, all values in all column are now in numeric values.
 The variety of range of each columns are vast. 
 Some reaches 6,000,000 some are negative numbers. 
 Normalizing the values into a (-1,1) range is used on all columns.
 
-### 1.1.3 Exploratory Data Analysis (EDA)
-EDA was conducted to understand the relationships between the features and the target variable. The following insights were gained:
+### 2.3 Exploratory Data Analysis (EDA)
+EDA was conducted to understand the relationships between the features and the target variable.
+As the target variable is the `repay_fail`, repayment failure rate will be used to measure how bad the given situations are.
+The repayment Failure rate is calculated as
 
-#### Loan Repayment Failure
-The target variable "repay_fail" has 2 distinct values, 1 for failure and 0 for success. 
+   Repayment Failure Rate = Total Fail / Total case X 100
+
+This method is used to have more understanding on the probability to fail the repayment given a case.
+For example, later in the analysis, it was known that failure rate of a person if owns a home, is about 15.58%.
+The higher failure rate, the more probable for it to fail repayment.
+
+The following insights were gained:
+
+#### 2.3.1 Loan Repayment Failure
+The target variable `repay_fail` has 2 distinct values, 1 for failure and 0 for success. 
 Unfortunately, the distribution are highly imbalanced. 
 
 ![Class Distribution](data/analysis/repay_fail_distribution.jpg)
 
-About 15.15% of the dataset are under failure class. 
+About 5,829 out of 38,480 (15.15%) of the dataset are under failure class. 
 These may pose difficulties during AI training. 
 However, several steps are made to handle these types of situations. 
 Additionaly, low populations of failure may indicate that the company's 
 current policy for applying a loan has an effective approval requirements.
 
-#### Failure Rate by Annual Income
+#### 2.3.2 Failure Rate by Annual Income
 
 ![Failure Rate by Annual Income](data/analysis/failure_rate_by_annual_income.jpg)
 
@@ -187,7 +197,7 @@ Unfortunately, there is a sudden spike on failure rate at around 1,250,000 annua
 This may be an outlier where loaners might be overly confident with their ability to repay the loan. 
 Loaners earning above this seems to have no repayment failure.
 
-### Failure rate by Debt to Income Ratio
+### 2.3.3 Failure rate by Debt to Income Ratio
 
 ![Failure rate by Debt to Income Ratio](data/analysis/failure_rate_by_debt_to_income_ratio.jpg)
 
@@ -201,7 +211,7 @@ The higher the debt to income ration, the higher the failure rate.
 In leman terms, the less the debt, the less probable to fail the repayment. 
 This aligns to our common sense.
 
-### Failure rate by Employment Length
+### 2.3.4 Failure rate by Employment Length
 
 ![Failure rate by Employment Length](data/analysis/failure_rate_by_employment_length.jpg)
 
@@ -213,16 +223,18 @@ Generally, the line graph indicate a low positive relationship between employmen
 The failure fluctuate between 13% to 16% of failure rate. 
 The increases in failure rate may due to increase in debt, loan, and or commitments.
 
-### Failure rate by Home Ownership
+### 2.3.5 Failure rate by Home Ownership
 
 ![Failure rate by Home Ownership](data/analysis/failure_rate_by_home_ownership.jpg)
 
 This figure shows the failure rates between different home ownerships. 
 This may be counter-intuitive, but the data shows that does not own a home hav ethe highest failure rate despite being 1 less monthly commitments compared to other populations. Owning a home, rent, or mortgage it varies in failure rates between 14% to 16%. Other type of ownership (this includes unkown types) has as high as 23% failure rate, just below None ownership.
+These might suggest that people with no ownership of a home, is a person who does not have enough income to live in a home.
+Hence, the high failure rate.
 
-### Failure rate by Installments
+### 2.3.6 Failure rate by Installments
 
-![](data/analysis/failure_rate_by_installment.jpg)
+![Failure rate by Installments](data/analysis/failure_rate_by_installment.jpg)
 
 This figure shows the failure rates across the monthly installments.
 Unlike any other, the monthly installment may not have any relationship with the failure to repay. 
@@ -231,4 +243,61 @@ Common sense dictates that the higher the installment, the more probable to fail
 However, The current requirements enforced by the financial institutions to approve a loan may result to a steady repayment ability to installment ratio. 
 However, Installments at the higher end may be unpredictable it starts to fluctuate on a very high variance.
 
-## 1.1 Dataset Analysis
+### 2.3.7 Summary
+
+From the above analysis, we can conclude that:
+- Failure of repayment is a rare case.
+- Higher income does help prevent failure to repay, but there are inbetween where they might be overly confident to be able to repay and taking larger risk in applying a loan.
+- Higher the debt, the more likely to fail repayment.
+- The longer you work, does not necessarily mean you are more capable of repaying the loan.
+- Be careful to apply a loan if you don't have any type of owning a home.
+- Monthly installments may not be the factor of failure repayment 
+
+### 2.4 Correlation Of Features With Repayment Failure
+
+After data preprosessing, the correlation between columns to the target variable is calculated by using the `df.corr()` function.
+The top 10 highest correlation are as follows:
+1. loan_status (0.996121)
+2. total_received_principal (0.343545)
+3. total_payment (0.247532)
+4. total_payment_investors (0.245041)
+5. last_payment_date (0.224867)
+6. last_payment_amnt (0.220326)
+7. interest_rate (0.199220) 
+8. term (0.134424) 
+9. inquiries_last_6mths (0.111648) 
+10. purpose (0.099498)
+
+The 10  least correlations are as follows:
+30. no_delinquency_2yrs (0.020505)
+31. revolving_balance (0.018877)
+32. total_received_interest (0.017384)
+33. earliest_credit_line (0.016971)
+34. member_id (0.011849)
+35. funded_amount_investors (0.009565)
+36. id (0.008377)
+37. no_open_accounts (0.006294)
+38. employment_length                      (0.005634)
+39. revolving_utillization                 (0.002154)
+
+## 3.0 Train Test Data Splitting
+
+The dataset is split into 80:20. The 80% of the dataset is used as the training dataset, while the other 20% is used for testing dataset.
+It is ideal to preserve the class distribution of the repayment failure (`repay_fail`) in both the training and testing datasets to ensure that the model is trained and evaluated on a representative sample of the data.
+However, the class distribution for this case is highly imbalance. 
+Therefor, the training data is trimmed (remove extra `repay_fail = 0` data) to match the number of `repay_fail = 1`.
+The extra `repay_fail = 0` from the training data was not put into the testing dataset to preserve real-world scenario.
+
+The `prepare_train_test_data` function is used to split the dataset into training and testing datasets. The function first separates the data into two groups based on the `repay_fail` column: one group with `repay_fail` equal to 0 (pass) and another group with `repay_fail` equal to 1 (fail). The data is then randomized to ensure that the order of the samples does not affect the training process.
+
+The training dataset is created by taking the first 80% of the samples from each group, and the testing dataset is created by taking the remaining 20% of the samples from each group. The resulting training and testing datasets are saved as CSV files.
+
+The training and testing dataset are as below:
+- Train dataset
+  - `repay_fail = 0`: 4663 (50%)
+  - `repay_fail = 1`: 4663 (50%)
+- Test dataset
+  - `repay_fail = 0`: 6531 (84.85%)
+  - `repay_fail = 1`: 1166 (15.15%)
+
+## 4.0 AI Training and Testing
