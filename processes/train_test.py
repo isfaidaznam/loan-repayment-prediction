@@ -62,7 +62,8 @@ def export_model_if_better(model, confusion_matrix_df):
         shutil.copyfile("config/config.yaml", "ann_model/config.yaml")
 
 
-def train_neural_network(train_df):
+
+def train_neural_network(train_df, test_df):
     if Config().ML_TRAINING["RANDOMNESS"]:
         np.random.seed(42)
         tf.random.set_seed(42)
@@ -74,6 +75,8 @@ def train_neural_network(train_df):
     # Reorder the columns of X
     X = train_df.loc[:, column_order]
     y = train_df['repay_fail']
+    X_test = test_df.loc[:, column_order]
+    Y_test = test_df['repay_fail']
 
     # Split the data into training and validation sets
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, shuffle=Config().ML_TRAINING['RANDOMNESS'],
@@ -97,11 +100,11 @@ def train_neural_network(train_df):
               batch_size=32,
               validation_data=(X_val, y_val))
 
-    y_pred = model.predict(X_val)
+    y_pred = model.predict(X_test)
 
     result_df = pd.DataFrame()
-    result_df["target"] = y_val
-    result_df["target_binary"] = (y_val > 0).astype(int)
+    result_df["target"] = Y_test
+    result_df["target_binary"] = (Y_test > 0).astype(int)
     result_df["raw_predict"] = y_pred
     result_df["predict_binary"] = (y_pred > 0.5).astype(int)
 
