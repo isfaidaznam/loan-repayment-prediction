@@ -1,4 +1,5 @@
 import math
+import os
 import pickle
 
 from sklearn.preprocessing import MinMaxScaler
@@ -314,8 +315,9 @@ def normalise(df):
     scaler = MinMaxScaler(feature_range=(-1, 1))
     for column_name in df.keys():
         df[column_name] = scaler.fit_transform(df[[column_name]])
-        # Save the scaler to a file
-        with open(f'config/model/scaler/{column_name}_scaler.pkl', 'wb') as f:
+        if not os.path.exists("config/scaler"):
+            os.makedirs("config/scaler")
+        with open(f'config/scaler/{column_name}_scaler.pkl', 'wb') as f:
             pickle.dump(scaler, f)
     return df
 
