@@ -100,9 +100,9 @@ def export_accuracy_curve(history):
     plt.ylabel('Accuracy')
     plt.title('Training and Validation Curves')
 
-    plt.savefig(f'ann_model/Accuracy_Curves.jpg', dpi=300, bbox_inches='tight')
+    plt.savefig(f'trained_model/ann_model/Accuracy_Curves.jpg', dpi=300, bbox_inches='tight')
     plt.close()
-    print("Training and validation curves saved on 'ann_model/Accuracy_Curves.jpg")
+    print("Training and validation curves saved on 'trained_model/ann_model/Accuracy_Curves.jpg")
 
 def export_loss_curve(history):
     loss = history.history['loss']
@@ -115,7 +115,7 @@ def export_loss_curve(history):
     plt.ylabel('Loss')
     plt.title('Training and Validation Curves')
 
-    plt.savefig(f'ann_model/Loss_Curves.jpg', dpi=300, bbox_inches='tight')
+    plt.savefig(f'trained_model/ann_model/Loss_Curves.jpg', dpi=300, bbox_inches='tight')
     plt.close()
-    print("Training and validation curves saved on 'ann_model/Loss_Curves.jpg")
+    print("Training and validation curves saved on 'trained_model/ann_model/Loss_Curves.jpg")
     pass

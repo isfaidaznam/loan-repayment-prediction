@@ -49,7 +49,7 @@ def export_model_if_better(model, confusion_matrix_df, history):
         while intent.lower() not in "yn":
             intent = input("Overwrite model ? [y/n]\t:")[0]
     except:
-        print("Unable to read performance value from 'ann_model/model_performance.yaml'.")
+        print("Unable to read performance value from 'trained_model/ann_model/model_performance.yaml'.")
         while intent.lower() not in "yn":
             intent = input("Overwrite model ? [y/n]\t:")[0]
 
@@ -67,15 +67,15 @@ def export_model_if_better(model, confusion_matrix_df, history):
                 'SENSITIVITY': process_confusion_matrix.get_sensitivity(confusion_matrix_df)
             }
         }
-        with open('ann_model/model_performance.yaml', 'w') as f:
+        with open('trained_model/ann_model/model_performance.yaml', 'w') as f:
             yaml.dump(data, f, indent=4)
-        print("Model Performance stored in 'ann_model/model_performance.yaml'")
+        print("Model Performance stored in 'trained_model/ann_model/model_performance.yaml'")
 
-        model.save('ann_model/predict_loan_repay_fail_model.keras')
-        print("Trained Model Performance stored in 'ann_model/predict_loan_repay_fail_model.keras'")
+        model.save('trained_model/ann_model/predict_loan_repay_fail_model.keras')
+        print("Trained Model Performance stored in 'trained_model/ann_model/predict_loan_repay_fail_model.keras'")
 
         import shutil
-        shutil.copyfile("config/config.yaml", "ann_model/config.yaml")
+        shutil.copyfile("config/config.yaml", "trained_model/ann_model/config.yaml")
 
         export_accuracy_curve(history)
         export_loss_curve(history)
