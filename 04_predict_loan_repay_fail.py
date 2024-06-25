@@ -23,7 +23,8 @@ def get_trained_model(selection = None):
         elif selection.lower() == "knn":
             model = load('trained_model/knn_model/predict_loan_repay_fail_model.joblib')
             print_title("Model Summary")
-            print(model.get_params())
+            params_df = pd.DataFrame(list(model.get_params().items()), columns=['Parameter', 'Value'])
+            print(params_df)
         return model
     except Exception as e:
         print(f"Error loading model: {e}")
@@ -46,6 +47,9 @@ if __name__=="__main__":
         print("Reading new data from 'input_for_prediction.yaml'...")
         new_data = read_input()
         selection = select_model()
+        input("Note\t: This session is accessing new input for prediction. Make sure all data from "
+              "'input_for_prediction.yaml' is set for your prediction.\nInsert any key to continue predict data from "
+              "'input_for_prediction.yaml' :")
         preprocessed_data = preprocess_data_predict(new_data, selection)
         model = get_trained_model(selection)
         result = model.predict(preprocessed_data)
