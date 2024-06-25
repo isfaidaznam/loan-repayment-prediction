@@ -8,6 +8,8 @@ from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.model_selection import train_test_split
 from config.config import Config
 from processes import process_confusion_matrix
+from processes.data_visualisation import export_accuracy_curve, export_loss_curve
+from processes.formating import print_title
 
 
 def get_train_test_data():
@@ -22,9 +24,8 @@ class Model_stats:
             self.__dict__ = yaml.safe_load(f)
 
 
-def export_model_if_better(model, confusion_matrix_df):
-    newly_trained_sensitivity = process_confusion_matrix.get_sensitivity(confusion_matrix_df)
-    print(f"\n\nNewly Trained Model Sensitivity\t:{newly_trained_sensitivity}")
+def export_model_if_better(model, confusion_matrix_df, history):
+    intent = "a"
     try:
         prev_sensitivity = Model_stats().ANN_PERFORMANCE["SENSITIVITY"]
         print(f"Previous Model Sensitivity\t:{prev_sensitivity}")
@@ -61,6 +62,11 @@ def export_model_if_better(model, confusion_matrix_df):
         import shutil
         shutil.copyfile("config/config.yaml", "ann_model/config.yaml")
 
+        export_accuracy_curve(history)
+        export_loss_curve(history)
+
+
+
 
 
 def train_neural_network(train_df, test_df):
@@ -93,12 +99,12 @@ def train_neural_network(train_df, test_df):
     print(model.summary())
 
     # Model Training
-    model.fit(X_train,
-              y_train,
-              epochs=Config().ML_TRAINING["EPOCH"],
-              shuffle=Config().ML_TRAINING['RANDOMNESS'],
-              batch_size=32,
-              validation_data=(X_val, y_val))
+    history = model.fit(X_train,
+                        y_train,
+                        epochs=Config().ML_TRAINING["EPOCH"],
+                        shuffle=Config().ML_TRAINING['RANDOMNESS'],
+                        batch_size=32,
+                        validation_data=(X_val, y_val))
 
     y_pred = model.predict(X_test)
 

@@ -83,3 +83,35 @@ def generate_data_visual(df):
             generate_bar_graph(df,column_name)
     except:
         pass
+
+
+def export_accuracy_curve(history):
+    accuracy = history.history['accuracy']
+    val_accuracy = history.history['val_accuracy']
+
+    plt.plot(accuracy, label='Training Accuracy')
+    plt.plot(val_accuracy, label='Validation Accuracy')
+    plt.legend()
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.title('Training and Validation Curves')
+
+    plt.savefig(f'ann_model/Accuracy_Curves.jpg', dpi=300, bbox_inches='tight')
+    plt.close()
+    print("Training and validation curves saved on 'ann_model/Accuracy_Curves.jpg")
+
+def export_loss_curve(history):
+    loss = history.history['loss']
+    val_loss = history.history['val_loss']
+
+    plt.plot(loss, label='Training Loss')
+    plt.plot(val_loss, label='Validation Loss')
+    plt.legend()
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.title('Training and Validation Curves')
+
+    plt.savefig(f'ann_model/Loss_Curves.jpg', dpi=300, bbox_inches='tight')
+    plt.close()
+    print("Training and validation curves saved on 'ann_model/Loss_Curves.jpg")
+    pass
