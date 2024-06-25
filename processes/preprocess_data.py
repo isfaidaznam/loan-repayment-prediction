@@ -302,7 +302,7 @@ def extract_exist_months_since_last_delinquency(months_since_last_delinquency):
         return 0.5
 
 
-def column_extraction(df):
+def feature_extraction(df):
     extraction_function = {"meet_credit_policy": [extract_meet_credit_policy, "loan_status"],
                            "purpose_asset_type": [extract_asset_type,"purpose"],
                            "purpose_essential": [extract_essential_type,"purpose"],
@@ -338,13 +338,13 @@ def remove_irrelevant_column(df):
 
 
 def preprocess_data(raw_data):
-    final_df = column_extraction(raw_data)
+    final_df = feature_extraction(raw_data)
     final_df = data_transformation(final_df)
     final_df = normalise(final_df)
     return final_df
 
 def preprocess_data_predict(raw_data, model_name):
-    final_df = column_extraction(raw_data)
+    final_df = feature_extraction(raw_data)
     final_df = data_transformation(final_df)
 
     # Normalised
