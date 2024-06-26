@@ -17,7 +17,7 @@ def read_data() -> pd.DataFrame:
 
 def transform_term(text):
     try:
-        new_text = float(text.lower().replace("months","").strip())
+        new_text = float("".join([s for s in text if s.isdigit() or s in [".", " "]]).split(" ")[0])
         return new_text
     except:
         return -1
