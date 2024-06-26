@@ -253,9 +253,6 @@ def transform_date(date_text):
 However, all these column were removed at the final stage before training the model. 
 These may not be relevant as the question of 'when' did the person pay or 'when' is the issue date and other, may not effect the failure repayment.
 
-Furthermore, including date data in the model may not be relevant for future predictions, as the model would need to account for temporal trends and seasonality, which could add unnecessary complexity. 
-By removing these columns, we can focus on the underlying relationships between the borrower's characteristics and loan features, and build a more robust and generalizable model.
-
 ##### 2.3.2.4 Transform Zip Code Data into Numerical Data
 
 For this transformation, it converts zip code data into numerical data by extracting the first three digits of the zip code. 
@@ -392,13 +389,17 @@ There are several columns that are irrelevant and are removed before AI Training
 The list of columns to remove were not specified. 
 However, the list of columns to use in training the Models are specified under [config/config.yaml](config/config.yaml).
 
-| Column name      | Reason for Removal                                                                                                                               |
-|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| Unnamed: 0       | irrelevant id/indexing values                                                                                                                    |
-| member_id        | irrelevant id/indexing values                                                                                                                    |
-| id               | irrelevant id/indexing values                                                                                                                    |
-| loan_status      | loan status may include information after it was known to have failed repayment. Moreover, each categories consist of a single repay_fail class. |
-| all date columns | as mentioned, all date data are irrelevant.                                                                                                      |
+| Column name        | Reason for Removal                                                                                                                                    |
+|--------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Unnamed: 0         | irrelevant id/indexing values                                                                                                                         |
+| member_id          | irrelevant id/indexing values                                                                                                                         |
+| id                 | irrelevant id/indexing values                                                                                                                         |
+| loan_status        | loan status may include information only after it was known to have failed repayment. Moreover, each categories consist of a single repay_fail class. |
+| all date columns * | as mentioned below, all date data are irrelevant.                                                                                                     |
+
+Note * : 
+Including date data in the model may not be relevant for future predictions, as the model would need to account for temporal trends and seasonality, which could add unnecessary complexity. 
+By removing these columns, we can focus on the underlying relationships between the borrower's characteristics and loan features, and build a more robust and generalizable model.
 
 
 ### 2.4 Correlation Of Features With Repayment Failure
@@ -784,16 +785,16 @@ training, and testing.
 
 During the data analysis phase, key insights and relationships was obtained between the features and the target 
 variable, repay_fail. 
-We found out that failure of repayment is a rare case.
+That failure of repayment is a rare case.
 Moreover, there also an income group that indicate that the borrowers is over-confident when applying for a loan.
-Furthermore, we observed that monthly installments and employment length may not be significant factors in predicting 
+Furthermore, it is observed that monthly installments and employment length may not be significant factors in predicting 
 repayment failure, as there was no clear correlation between these features and the target variable.
 
-After data preprocessing, we split the dataset into 80:20 for training and testing purposes. 
+After data preprocessing, the dataset is split into 80:20 for training and testing purposes. 
 The instances of `repay_fail` = 0 within the training dataset was trimmed to balance the class distribution for proper Training. 
 For Testing however, the class distribution is preserved to mimic real world scenario. 
 
-We trained two AI/ML algorithms, Artificial Neural Network (ANN) and K-Nearest Neighbors (K-NN), and compared their 
+Two AI/ML algorithms, Artificial Neural Network (ANN) and K-Nearest Neighbors (K-NN), had been trained and compared their 
 performance. 
 The key metrix to consider is the sensitivity due to the fact that `repay_fail` = 1 is a rare case and 
 preventive measures need to be made on all borrowers that are predicted to fail repayment. 
@@ -802,7 +803,7 @@ The ANN model achieved a sensitivity of 95.88%, while the K-NN model achieved a 
 Additionally, ANN model achieve an over the top accuracy of 98.16%.
 Based on these results, the ANN model is the best choice for Loan Repayment Failure Prediction Model.
 
-For future works, we recommend addressing class imbalance, exploring temporal data, model selection, hyperparameter 
+For future works, it is recommended to start addressing class imbalance, exploring temporal data, model selection, hyperparameter 
 tuning, model interpretability, and deployment and monitoring. 
 These improvements can help enhance the model's performance, provide better insights, and 
 ensure its effectiveness in a production environment.
