@@ -603,7 +603,14 @@ distribution of `repay_fail = 0` is 84.85%. which means, if the model only predi
 This would have 'high accuracy' but unable to be used to predict failure repayments. 
 However, high accuracy means that false positive and false negative in a production environment will rarely occur.
 
-### 4.1.5 How to Initiate ANN Training and Testing
+#### 4.1.5 Limitations of ANN
+
+The ANN model, despite its high performance, has limitations in terms of interpretability and complexity.
+The model's complexity makes it difficult to understand the relationships between input features and the predicted 
+output, which can be a concern in high-stakes applications like loan repayment prediction. 
+Additionally, the model's performance may degrade when faced with out-of-distribution data or concept drift.
+
+#### 4.1.6 How to Initiate ANN Training and Testing
 
 To initiate ANN training, you must first 
 
@@ -624,7 +631,7 @@ By weighing the importance of each neighbor based on their proximity, K-NN
 can effectively classify new instances and make predictions, making it a popular 
 choice for classification and regression tasks.
 
-#### 4.1.1 Model Configuration
+#### 4.2.1 Model Configuration
 
 | Configuration | Value     | 
 |---------------|-----------|
@@ -641,7 +648,7 @@ The K-Nearest Neighbors (K-NN) algorithm is configured to automatically determin
 The model will utilize 7 nearest neighbors for prediction, with uniform weights assigned to each neighbor. 
 The number of jobs and metric parameters are set to default values, with no specific configuration.
 
-#### 4.1.2 Training Parameter
+#### 4.2.2 Training Parameter
 
 - nearest neighbors = 7
 
@@ -686,7 +693,16 @@ but rather compare the similarity of the new data to an existing data.
 To improve the model's performance, 
 it's essential to address these issues and focus on increasing the sensitivity to detect more true positive instances accurately.
 
-### 4.1.5 How to Initiate K-NN Training and Testing
+#### 4.2.5 Limitation of K-NN
+
+The K-NN model, while simple and easy to implement, has limitations in terms of its sensitivity to outliers and 
+noisy data. 
+The model's performance can be heavily influenced by the choice of hyperparameters, such as the number of nearest 
+neighbors, which can be difficult to tune. 
+Furthermore, the model's lack of generalization capabilities makes it less effective in handling complex patterns 
+in the data.
+
+#### 4.2.6 How to Initiate K-NN Training and Testing
 
 To initiate K-NN training, you must...
 
