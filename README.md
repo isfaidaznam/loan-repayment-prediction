@@ -208,7 +208,7 @@ Straight of the bat, an outlier is visible at about 95% debt to income ratio.
 Having a debt of 95 times the income with zero failure repayment is not logically sound. 
 Ignoring the outlier, the relationship between Failure rate and the debt to income ratio has a positive correlation. 
 The higher the debt to income ration, the higher the failure rate. 
-In leman terms, the less the debt, the less probable to fail the repayment. 
+In layman terms, the less the debt, the less probable to fail the repayment. 
 This aligns to our common sense.
 
 ### 2.3.4 Failure rate by Employment Length
@@ -325,21 +325,35 @@ These 2 distinct algorithm is chosen due their key differences.
 
 ### 4.1 Artificial Neural Network (ANN)
 
-### 4.1.1 Model Architecture
+#### 4.1.1 Model Architecture
 
-Layer 1  : Dense layer  , 32 nodes, relu activation
-Layer 2  : Dense layer  , 33 nodes, relu activation
-Layer 3  : Dense layer  , 33 nodes, sigmoid activation
-Layer 4  : Dense layer  , 1 nodes, sigmoid activation
+Layer 1  : 
+   - Layer Dense layer
+   - 32 nodes
+   - relu activation 
 
-### 4.1.2 Training Parameter
+Layer 2  : 
+   - Dense layer
+   - 33 nodes
+   - relu activation
 
-- 10 epoch
-- adam optimizer
-- mean absolute error loss function
+Layer 3  : 
+   - Dense layer
+   - 33 nodes
+   - sigmoid activation
 
+Layer 4  : 
+   - Dense layer
+   - 1 nodes
+   - sigmoid activation
 
-### 4.1.3 Training Curve
+#### 4.1.2 Training Parameter
+
+- number of epoch = 10
+- optimizer  = adam optimizer
+- loss function = mean absolute error
+
+#### 4.1.3 Training Curve
 
 Before reading the Graphs below, note that Training dataset is the data thats the AI Model is training on, while validation date set is 
 the data thats not been seen by the AI Model during learning, but only to monitor what would it scored on the testing dataset.
@@ -358,15 +372,14 @@ The lower the loss, the closer the predictions.
 And epoch of 100 had been done, but the accuracy curve and the loss curve shows that they have already converged at the early epoch.
 This shows that the Model has been over fitting. Therefore, 10 epoch is all we needed to train on this dataset.
 
-### 4.1.4 Performance
+#### 4.1.4 Performance
 
 Confusion Matrix
-- Actual 0
-  - Predicted 0: 6,506
-  - Predicted 1: 25
-- Actual 1
-  - Predicted 0: 86
-  - Predicted 1: 1,080
+
+| Actual \ Predicted | Predicted 0 | Predicted 1 |
+|--------------------|-------------|-------------|
+| Actual 0           | 6,506       | 25          |
+| Actual 1           | 86          | 1,080       |
 
 True Positive  : 1,080
 
@@ -383,9 +396,70 @@ Sensitivity: 92.62%
 Looking into the performance, Overall results looks good. The key metric to consider is the Sensitivity. 
 Sensitivity shows how much positive can the model predicted correctly. 
 92.62% Sensitivity implies that the Model is good at detecting Failure repayment class. 
-In leman terms, 92.62% of Failure repayment where able to predicted.
+In layman terms, 92.62% of Failure repayment where able to predicted.
 
 The accuracy does not really helps in this case due to the fact that the dataset is highly imbalance. Recall that the 
 distribution of `fail_repay = 0` is 84.85%. which means, if the model only predicts `fail_repay = 0`, the accuracy would be 84.85%.
 This would have 'high accuracy' but unable to be used to predict failure repayments. 
 However, high accuracy means that false positive and false negative in a production environment will rarely occur.
+
+### 4.2 K-Nearest Neighbors (K-NN)
+
+#### 4.1.1 Model Architecture
+
+#### 4.1.2 Training Parameter
+
+- nearest neighbors = 7
+
+#### 4.1.3 Training Curve
+
+
+#### 4.2.4 Performance
+
+Confusion Matrix
+
+| Actual \ Predicted | Predicted 0 | Predicted 1 |
+|--------------------|-------------|-------------|
+| Actual 0           | 5,035       | 1,496       |
+| Actual 1           | 300         | 866         |
+
+True Positive  : 866
+
+True Negative  : 5,035
+
+False Positive  : 1,496
+
+False Negative  : 300
+
+Accuracy : 76.67%
+
+Sensitivity: 74.27%
+
+Looking into the performance, overall results look decent. 
+Note that the key metric to consider is the Sensitivity. 
+Sensitivity shows how much positive can the model predicted correctly. 
+74.27% Sensitivity implies that the Model is fair at detecting positive class. 
+In layman terms, 74.27% of positive instances were able to be predicted.
+
+The accuracy of 76.67% does not really help in this case due to the fact that the dataset might be imbalance. 
+This would have 'decent accuracy' but unable to be used to predict positive instances accurately. 
+However, decent accuracy means that false positive and false negative in a production environment will occasionally occur.
+
+Recall that there may exist outliers within the dataset. 
+These noisy data and outliers may be the root cause of low performing K-NN, becaue K-NN does not do generalisation, 
+but rather compare the similarity of the new data to an existing data.
+To improve the model's performance, 
+it's essential to address these issues and focus on increasing the sensitivity to detect more true positive instances accurately.
+
+### 4.3 Summary
+
+| Matrix\Model | ANN    | K-NN   |
+|--------------|--------|--------|
+| Sensitivity  | 92.62% | 74.27% |
+| Accuracy     | 98.56% | 76.67% |
+
+The ANN has higher sensitivity (92.62%) compared to the K-NN (74.27%), with a over-the-top accuracy (98.56%).
+ANN is clearly the best choice to be used as Loan Repayment Failure Prediction Model.
+Implementing this model to take preventive measures to prevent failure would greatly increase profit.
+
+## 5.0 Future Works
