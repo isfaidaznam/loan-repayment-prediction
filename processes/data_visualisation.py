@@ -15,7 +15,7 @@ def generate_line_graph(df, column_name):
         if column_name == "employment_length":
             temp_df[column_name] = [transform_employment_length(s) for s in temp_df[column_name]]
             # Filter out null values (0)
-            temp_df[column_name] = [None if s == 0 else s for s in temp_df[column_name]]
+            temp_df[column_name] = [None if s == -1 else s for s in temp_df[column_name]]
 
         # Bining
         column_for_x_axis = f'{column_name}_binned'
