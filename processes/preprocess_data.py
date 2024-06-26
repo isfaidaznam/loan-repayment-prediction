@@ -31,7 +31,7 @@ def transform_employment_length(text):
         new_text = float(new_text)
         return new_text
     except:
-        return 0
+        return -1
 
 
 def transform_home_ownership(text):
@@ -67,7 +67,7 @@ def transform_date(date_text):
     try:
         return date_text.timestamp()
     except:
-        return 0
+        return -1
 
 
 def transform_zip_code(zip_code):
@@ -75,7 +75,7 @@ def transform_zip_code(zip_code):
         new_zip_code = str(zip_code)[:3]
         return float(new_zip_code)
     except:
-        return 0
+        return -1
 
 
 def transform_revolving_utillization(text):
@@ -83,7 +83,7 @@ def transform_revolving_utillization(text):
         new_text = "".join([s for s in text.lower() if s == "." or s.isdigit()])
         return float(new_text)
     except:
-        return 0
+        return -1
 
 
 def transform_loan_status(loan_status):
@@ -147,7 +147,7 @@ def transform_address_state(state):
         base26_value += 1
         return base26_value
     except:
-        return 0
+        return -1
 
 
 def transform_months_since_last_delinquency(months_since_last_delinquency):
@@ -155,9 +155,9 @@ def transform_months_since_last_delinquency(months_since_last_delinquency):
         if not math.isnan(float(months_since_last_delinquency)):
             return float(months_since_last_delinquency)
         else:
-            return 0
+            return -1
     except:
-        return 0
+        return -1
 
 
 def transform_nan_num(value):
