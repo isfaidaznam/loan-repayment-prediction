@@ -443,7 +443,8 @@ This could suggest that the interest rate is not the primary driver, but the sec
 
 On the lower end, the columns `funded_amount_investors`, `no_open_accounts`, `employment_length`, and `revolving_utillization` 
 have much weaker correlations with repayment failure than expected. 
-Surprisingly, they have an even lower correlations than the seemingly irrelevant columns `member_id`, `id`, and `Unnamed: 0`.
+Surprisingly, they have an even lower correlations than the seemingly irrelevant columns `member_id`, `id`, and `Unnamed: 0`. 
+After these 4 columns where removed, The models where able to improve in terms of accuracy and sensitivity.
 
 ## 3.0 Train Test Data Splitting
 
@@ -499,15 +500,15 @@ Through a process of training and optimization, ANNs can adapt and improve their
 
 | Layer \ Description    | Layer Type     | Number of Nodes | Activation Function |
 |------------------------|----------------|-----------------|---------------------|
-| Layer 1 (input layer)  | Dense layer    | 32              | ReLU                |
-| Layer 2                | Dense layer    | 33              | ReLU                |
-| Layer 3                | Dense layer    | 33              | Sigmoid             |
+| Layer 1 (input layer)  | Dense layer    | 28              | ReLU                |
+| Layer 2                | Dense layer    | 27              | ReLU                |
+| Layer 3                | Dense layer    | 27              | Sigmoid             |
 | Layer 4 (output layer) | Dense layer    | 1               | Sigmoid             |
 
 The Model Architecture of this Artificial Neural Network (ANN) consists of four dense layers, 
-with the first two layers having 32 and 33 nodes, respectively, using the ReLU activation function 
+with the first two layers having 28 and 27 nodes, respectively, using the ReLU activation function 
 to introduce non-linearity. 
-The third layer also has 33 nodes, but uses the sigmoid activation function, 
+The third layer also has 27 nodes, but uses the sigmoid activation function, 
 which is often used for binary classification problems. 
 The final layer has a single node with sigmoid activation.
 A single output node is decided because the model is designed to predict only `repay_fail`.
@@ -550,26 +551,26 @@ This shows that the Model has been over fitting. Therefore, 10 epoch is all we n
 
 | Actual \ Predicted | Predicted 0 | Predicted 1 |
 |--------------------|-------------|-------------|
-| Actual 0           | 6,506       | 25          |
-| Actual 1           | 86          | 1,080       |
+| Actual 0           | 6437        | 94          |
+| Actual 1           | 48          | 1118        |
 
-True Positive  : 1,080
+True Positive  : 1118
 
-True Negative  : 6,506
+True Negative  : 6437
 
-False Positive  : 25
+False Positive  : 94
 
 False Negative  : 86
 
 | Matrix      | Score  |
 |-------------|--------|
-| Accuracy    | 98.56% |
-| Sensitivity | 92.62% |
+| Accuracy    | 98.16% |
+| Sensitivity | 95.88% |
 
 Looking into the performance, Overall results looks good. The key metric to consider is the Sensitivity. 
 Sensitivity shows how much positive can the model predicted correctly. 
-92.62% Sensitivity implies that the Model is good at detecting Failure repayment class. 
-In layman terms, 92.62% of Failure repayment where able to predicted.
+95.88% Sensitivity implies that the Model is good at detecting Failure repayment class. 
+In layman terms, 95.88% of Failure repayment where able to predicted.
 
 The accuracy does not really helps in this case due to the fact that the dataset is highly imbalance. Recall that the 
 distribution of `repay_fail = 0` is 84.85%. which means, if the model only predicts `repay_fail = 0`, the accuracy would be 84.85%.
@@ -624,29 +625,29 @@ The best Sensitivity score is when `nearest neighbors = 7`.
 
 | Actual \ Predicted | Predicted 0 | Predicted 1 |
 |--------------------|-------------|-------------|
-| Actual 0           | 5,035       | 1,496       |
-| Actual 1           | 300         | 866         |
+| Actual 0           | 5199        | 1332        |
+| Actual 1           | 250         | 916         |
 
-True Positive  : 866
+True Positive  : 916
 
-True Negative  : 5,035
+True Negative  : 5199
 
-False Positive  : 1,496
+False Positive  : 1332
 
-False Negative  : 300
+False Negative  : 250
 
 | Matrix      | Score  |
 |-------------|--------|
-| Accuracy    | 76.67% |
-| Sensitivity | 74.27% |
+| Accuracy    | 79.44% |
+| Sensitivity | 78.56% |
 
 Looking into the performance, overall results look decent. 
 Note that the key metric to consider is the Sensitivity. 
 Sensitivity shows how much positive can the model predicted correctly. 
-74.27% Sensitivity implies that the Model is fair at detecting positive class. 
-In layman terms, 74.27% of positive instances were able to be predicted.
+78.56% Sensitivity implies that the Model is fair at detecting positive class. 
+In layman terms, 78.56% of positive instances were able to be predicted.
 
-The accuracy of 76.67% does not really help in this case due to the fact that the dataset might be imbalance. 
+The accuracy of 79.44% does not really help in this case due to the fact that the dataset might be imbalance. 
 This would have 'decent accuracy' but unable to be used to predict positive instances accurately. 
 However, decent accuracy means that false positive and false negative in a production environment will occasionally occur.
 
@@ -668,10 +669,10 @@ To initiate K-NN training, you must...
 
 | Matrix\Model | ANN    | K-NN   |
 |--------------|--------|--------|
-| Sensitivity  | 92.62% | 74.27% |
-| Accuracy     | 98.56% | 76.67% |
+| Sensitivity  | 95.88% | 78.56% |
+| Accuracy     | 98.16% | 79.44% |
 
-The ANN has higher sensitivity (92.62%) compared to the K-NN (74.27%), with a over-the-top accuracy (98.56%).
+The ANN has higher sensitivity (95.88%) compared to the K-NN (78.56%), with over-the-top accuracy (98.16%).
 ANN is clearly the best choice to be used as Loan Repayment Failure Prediction Model.
 Implementing this model to take preventive measures to prevent failure would greatly increase profit.
 
