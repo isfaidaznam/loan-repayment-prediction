@@ -111,7 +111,7 @@ From the above analysis, we can conclude that:
 - Failure of repayment is a rare case.
 - Higher income does help prevent failure to repay, but there are inbetween where they might be overly confident to be able to repay and taking larger risk in applying a loan.
 - Higher the debt, the more likely to fail repayment.
-- The longer you work, does not necessarily mean you are more capable of repaying the loan.
+- The longer you work, does not necessarily mean that you are more capable of repaying the loan.
 - Be careful to apply a loan if you don't have any type of owning a home.
 - Monthly installments may not be the factor of failure repayment 
 
@@ -671,15 +671,95 @@ To initiate K-NN training, you must...
 2. Simply run the [03_train_test_knn.py](03_train_test_knn.py) file.
 3. Once trained, the script will output the results. Enter `y` to overwrite the trained model. The trained model will be written [here](trained_model/ann_model/predict_loan_repay_fail_model.keras) along with other performance analysis.
 
-### 4.3 Summary
+### 4.3 Model Comparison
 
 | Matrix\Model | ANN    | K-NN   |
 |--------------|--------|--------|
 | Sensitivity  | 95.88% | 78.56% |
 | Accuracy     | 98.16% | 79.44% |
 
+The key metrix to consider is the sensitivity due to the fact that `repay_fail` = 1 is a rare case and 
+preventive measures need to be made on all borrowers that are predicted to fail repayment. 
+There is no harm done if preventive measures were made on borrowers that are predicted as able to repay.
+
 The ANN has higher sensitivity (95.88%) compared to the K-NN (78.56%), with over-the-top accuracy (98.16%).
+The sensitivity score of the ANN model indicates that the model is highly effective at correctly identifying instances of loan repayment failure.
 ANN is clearly the best choice to be used as Loan Repayment Failure Prediction Model.
 Implementing this model to take preventive measures to prevent failure would greatly increase profit.
 
 ## 5.0 Future Works
+
+### 5.1 Data Bias
+
+The data consist of borrowers that have their loan applications approved. This leads to unforeseen false analysis and Model biases.
+To address this issue, the data of unapproved loan application should be integrated into the dataset.
+These measures can improve on thorough analysis and minimised Model biases. 
+Additionally, these may also address class imbalance problem.
+
+### 5.1 Class Imbalance
+The dataset is highly imbalanced, with only 15.15% of instances labeled as failure. 
+This can negatively impact the model's performance, as it may be biased towards the majority class. 
+To address this issue, data augmentation techniques can be applied to generate synthetic data for the minority class.
+This can help improve the model's sensitivity and overall performance.
+
+### 5.2 Temporal Data
+Current project does not explored on temporal data. 
+Time series analysis techniques can be explored to capture the temporal patterns in the data.
+
+### 5.3 Model Selection
+The current project uses two machine learning algorithms, Artificial Neural Network (ANN) and K-Nearest Neighbors (K-NN). 
+Different machine learning algorithms can be explored and compared to find the best model for this specific problem.
+
+With an additional future works of exploring temporal data, a more complex Deep Learning algorithm can be use to evaluate the performance on time series data.
+Deep Learning algorithm such as Convolutional Neural Network (CNN) can be used for future works since CNN can detect multi-dimensional patterns in a spatial or temporal data.
+
+Other Machine Learning Algorithm can be used such as Recurrent Neural Network (RNN), Long Short-Term Memory (LSTM) Network,
+Gradient Boosting, Support Vector Machine (SVM) and Random Forest, can be explored.
+
+### 5.4 Hyperparameter Tuning
+
+This project does not done with proper hyperparameter tuning. Moreover, the fine-tuning process where not thorough and systematic.
+hyperparameter tuning can be performed to optimize the model's performance.
+
+To go any further, Optimisation algorithm such as Genetic Algorithm (GA) and Particle Swarm Optimisation (PSO) algorithm can be implemented
+to find the best possible parameter.
+
+### 5.5 Model Interpretability
+The current project does not perform any model interpretability, which can help financial institutions make more informed decisions and improve their lending policies.
+Model interpretability techniques can be applied to extract insights from the trained models, helping to better understand the factors influencing loan repayment failure.
+
+### 5.6 Deployment and Monitoring
+
+The trained model can be deployed in a production environment to make real-time predictions on new loan applications.
+Continuous monitoring and evaluation of the model's performance can help ensure its accuracy and effectiveness over time.
+
+## 6.0 Summary
+
+In this project, two AI/ML models were developed to predict loan repayment failure using a historical dataset of borrowers, 
+their features, and loan characteristics. 
+The project involved several stages, including data analysis, data preprocessing, train-test data splitting, AI 
+training, and testing.
+
+During the data analysis phase, key insights and relationships was obtained between the features and the target 
+variable, repay_fail. 
+We found out that failure of repayment is a rare case.
+Moreover, there also an income group that indicate that the borrowers is over-confident when applying for a loan.
+Furthermore, we observed that monthly installments and employment length may not be significant factors in predicting 
+repayment failure, as there was no clear correlation between these features and the target variable.
+
+After data preprocessing, we split the dataset into 80:20 for training and testing purposes. 
+The instances of `repay_fail` = 0 within the training dataset was trimmed to balance the class distribution for proper Training. 
+For Testing however, the class distribution is preserved to mimic real world scenario. 
+
+We trained two AI/ML algorithms, Artificial Neural Network (ANN) and K-Nearest Neighbors (K-NN), and compared their 
+performance. 
+The key metrix to consider is the sensitivity due to the fact that `repay_fail` = 1 is a rare case and 
+preventive measures need to be made on all borrowers that are predicted to fail repayment. 
+There is no harm done if preventive measures were made on borrowers that are predicted as able to repay.
+The ANN model achieved a sensitivity of 95.88%, while the K-NN model achieved a sensitivity of 78.56%. 
+Based on these results, the ANN model is the best choice for Loan Repayment Failure Prediction Model.
+
+For future works, we recommend addressing class imbalance, exploring temporal data, model selection, hyperparameter 
+tuning, model interpretability, and deployment and monitoring. 
+These improvements can help enhance the model's performance, provide better insights, and 
+ensure its effectiveness in a production environment.
