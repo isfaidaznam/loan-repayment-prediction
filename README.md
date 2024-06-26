@@ -131,7 +131,7 @@ The list of generated column are as below, along with their decriptions
 | purpose_essential | purpose | 1: essential spending<br>0.5: Ambiguous<br>0: nonessential            | purpose column can be categorized in multiple ways |
 | exist_months_since_last_delinquency | months_since_last_delinquency | 1: existence of last delinquency<br>0.5: unknown<br>0: no delinquency | Handling null values in months_since_last_delinquency column |
 
-Below are the sample code snipet for the following feature extraction.
+Below is an example code snipet for the following feature extraction.
 ``` python
 def extract_meet_credit_policy(loan_status):
     """
@@ -165,7 +165,7 @@ With some form of variations to handle each column's different needs, this kind 
 - employment_length
 - revolving_utillization
 
-Below are the sample code snipet for the following transformation.
+Below is an example code snipet for the following transformation.
 ``` python
 def transform_revolving_utillization(text):
     try:
@@ -194,7 +194,7 @@ With some form of variations to handle each column's different needs, this kind 
 - verification_status 
 - purpose
 
-Below are the sample code snipet for the following transformation.
+Below is an example code snipet for the following transformation.
 ``` python
 def transform_home_ownership(text):
     # The values where set based on failure rate that was calculated within 01_data_analysis.py
@@ -223,7 +223,7 @@ These transformation were applied on all date type columns such as the following
 - next_payment_date
 - last_credit_pull_date
 
-Below are the sample code snipet for the following transformation.
+Below is an example code snipet for the following transformation.
 ``` python
 def transform_date(date_text):
     try:
@@ -249,7 +249,7 @@ Additionally, zipcodes can be sorted as a numerical scale.
 Generally, zipcode of 43100 is nearby to zipcode 43100 physically.
 Hence, the 'zip_code' column is converted into a numerical value.
 
-Below are the code snipet for the following transformation.
+Below is an example snipet for the following transformation.
 ``` python
 def transform_zip_code(zip_code):
     try:
@@ -273,7 +273,7 @@ For example, address code "KJ" does not sit next to "KK".
 The 'address_state' column is converted into a numerical value, solely to be able to be process further.
 Zipcodes may have more correlations than address state.
 
-Below are the sample code snipet for the following transformation:
+Below is an example code snipet for the following transformation:
 ``` python
 def transform_address_state(state):
     try:
@@ -306,7 +306,7 @@ This method applies to columns including, but not limited to:
 - no_open_accounts
 - public_records
 
-Below are the sample code snipet for the following method:
+Below is an example code snipet for the following method:
 ``` python
 def transform_nan_num(value):
     try:
@@ -328,7 +328,7 @@ With some form of variations to handle each column's different needs, this kind 
 - verification_status : Missing values will be treated as "Not Verified"
 - purpose : Missing values will be treated as "other"
 
-Below are the sample code snipet for the following method.
+Below is an example code snipet for the following method.
 ``` python
 def transform_home_ownership(text):
     # The values where set based on failure rate that was calculated within 01_data_analysis.py
@@ -351,7 +351,7 @@ The variety of range of each columns are vast.
 Some reaches 6,000,000 some are negative numbers. 
 Normalizing the values into a (-1,1) range is used on all columns.
 
-Below are the sample code snipet for the following normalisation.
+Below is an example code snipet for the following normalisation.
 ``` python
 def transform_home_ownership(text):
     # The values where set based on failure rate that was calculated within 01_data_analysis.py
