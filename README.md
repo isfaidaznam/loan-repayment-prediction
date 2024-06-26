@@ -124,12 +124,12 @@ Before begin to train the AI models, data preprocessing needs to be done. In thi
 
 The list of generated column are as below, along with their decriptions
 
-| Feature Name | Extraction Column | Values                                                                | Reason of Extraction |
-|--------------|------------------|-----------------------------------------------------------------------|----------------------|
-| meet_credit_policy | loan_status | 1: meets policy<br>0.5: ambiguous<br>0: does not meet                 | loan_status column contains additional data about the meeting the credit policy. |
-| purpose_asset_type | purpose | 1: Assets<br>0.5: Ambiguous<br>0: Expenses                            | purpose column can be categorized in multiple ways |
-| purpose_essential | purpose | 1: essential spending<br>0.5: Ambiguous<br>0: nonessential            | purpose column can be categorized in multiple ways |
-| exist_months_since_last_delinquency | months_since_last_delinquency | 1: existence of last delinquency<br>0.5: unknown<br>0: no delinquency | Handling null values in months_since_last_delinquency column |
+| Feature Name                        | Extraction Column             | Values                                                                 | Reason of Extraction                                                             |
+|:------------------------------------|:------------------------------|:-----------------------------------------------------------------------|:---------------------------------------------------------------------------------|
+| meet_credit_policy                  | loan_status                   | 1: meets policy<br>0.5: ambiguous<br>0: does not meet                  | loan_status column contains additional data about the meeting the credit policy. |
+| purpose_asset_type                  | purpose                       | 1: Assets<br>0.5: Ambiguous<br>0: Expenses                             | purpose column can be categorized in multiple ways                               |
+| purpose_essential                   | purpose                       | 1: essential spending<br>0.5: Ambiguous<br>0: nonessential             | purpose column can be categorized in multiple ways                               |
+| exist_months_since_last_delinquency | months_since_last_delinquency | 1: existence of last delinquency<br>0.5: unknown<br>0: no delinquency  | Handling null values in months_since_last_delinquency column                     |
 
 Below is an example code snipet for the following feature extraction.
 ``` python
@@ -151,7 +151,7 @@ def extract_meet_credit_policy(loan_status):
 
 #### 2.3.2 Transformation
 
-1. Transform Categorical Numeric Data into Numerical Data
+##### 2.3.2.1 Transform Categorical Numeric Data into Numerical Data
 
 For this transformation, it converts the categorical data into numerical data where possible. 
 The "Categorical Numeric Data" refers to numeric scale that was stored as a categorical values.
@@ -175,7 +175,7 @@ def transform_revolving_utillization(text):
         return 0
 ```
 
-2. Transform Non-Ordinal Categorical data into Numerical Data
+##### 2.3.2.2 Transform Non-Ordinal Categorical data into Numerical Data
 
 For this transformation, it converts Ordinal data into numerical data using various methods. 
 The "Non-Ordinal Categorical data" refers to categorical data that has no clear linear order.
@@ -210,7 +210,7 @@ def transform_home_ownership(text):
         return 23.20
 ```
 
-3. Transform Date Data into Numerical Data
+##### 2.3.2.3 Transform Date Data into Numerical Data
 
 For this transformation, it converts date data into numerical data using the timestamp method.
 The purpose of this is to allows the model to understand the relation of a date. 
@@ -238,7 +238,7 @@ These may not be relevant as the question of 'when' did the person pay or 'when'
 Furthermore, including date data in the model may not be relevant for future predictions, as the model would need to account for temporal trends and seasonality, which could add unnecessary complexity. 
 By removing these columns, we can focus on the underlying relationships between the borrower's characteristics and loan features, and build a more robust and generalizable model.
 
-4. Transform Zip Code Data into Numerical Data
+##### 2.3.2.4 Transform Zip Code Data into Numerical Data
 
 For this transformation, it converts zip code data into numerical data by extracting the first three digits of the zip code. 
 zipcode usually not being used for prediction task.
@@ -259,7 +259,7 @@ def transform_zip_code(zip_code):
         return 0
 ```
 
-5. Transform Address State Data into Numerical Data
+##### 2.3.2.5 Transform Address State Data into Numerical Data
 
 For this transformation, it converts address state data into numerical data using a base 26 conversion method. 
 Address state such as "AL" will be treated as a base 24 digit.
@@ -292,7 +292,7 @@ def transform_address_state(state):
 
 #### 2.3.3 Handling Missing Value
 
-1. Handling Missing Value in Numeric data
+##### 2.3.3.1 Handling Missing Value in Numeric data
 
 Generally, all numeric values that will not make sense to have a negative number will be assign to -1. This value will represent unkown.
 This method applies to columns including, but not limited to:
@@ -318,7 +318,7 @@ def transform_nan_num(value):
         return -1
 ```
 
-2. Handling Missing Value in Categorical Data
+##### 2.3.3.2 Handling Missing Value in Categorical Data
 
 Categorical data that have a defined "other" categories such as "home_ownership" column will be use as an assignment for missing values.
 This is due to the unknown nature of the category "other" where the unknown value dimmed fit for the description.
