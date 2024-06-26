@@ -8,45 +8,148 @@ This project aims to develop an AI/ML model that can predict whether existing bo
 
 The provided dataset contains a whooping 38,480 total number of unique rows and 36 columns. The target variable is `repay_fail`, which indicates whether the borrower failed to repay the loan.
 
-### 2.2 Data Preprocessing
+### 2.2 Exploratory Data Analysis (EDA)
+EDA was conducted to understand the relationships between the features and the target variable.
+As the target variable is the `repay_fail`, repayment failure rate will be used to measure how bad the given situations are.
+The repayment Failure rate is calculated during data binning as
+```python
+temp_df = temp_df.groupby(column_for_x_axis, observed=True)['failure_rate'].mean().reset_index()
+```
+Before the code executes this code, the `failure_rate`'s value are equals to the `repay_fail` column. 
+Note that the mean function is used. 
+In a string of 0's and 1's, the percentage of 1's is the same as the mean.
 
-Before begin to train the AI models, data preprocessing needs to be done. In this project, 4 main data processing steps had be done.
+Example, if we have a column with values [0, 0, 1, 1, 0, 1], 
+the mean of this column would be **(0 + 0 + 1 + 1 + 0 + 1) /6 = 0.5**, which is equivalent to a repayment failure rate of where **3/6 = 0.5**.
+
+This method is used to have more understanding on the probability to fail the repayment given a case.
+For example, later in the analysis, it was known that failure rate of a person if owns a home, is about 15.58%.
+The higher failure rate, the more probable for it to fail repayment.
+
+The following insights were gained:
+
+#### 2.2.1 Loan Repayment Failure
+The target variable `repay_fail` has 2 distinct values, 1 for failure and 0 for success. 
+Unfortunately, the distribution are highly imbalanced. 
+
+![Class Distribution](data/analysis/repay_fail_distribution.jpg)
+
+About 5,829 out of 38,480 (15.15%) of the dataset are under failure class. 
+These may pose difficulties during AI training. 
+However, several steps are made to handle these types of situations. 
+Additionaly, low populations of failure may indicate that the company's 
+current policy for applying a loan has an effective approval requirements.
+
+#### 2.2.2 Failure Rate by Annual Income
+
+![Failure Rate by Annual Income](data/analysis/failure_rate_by_annual_income.jpg)
+
+The figure shows the relationship failure rate and the annual income. 
+The data binning of 20 bins had been performed. 
+
+This generally shows that income and repayment failure have a low inverse correlations. 
+As income increases, repayment failure rate decreases. 
+The failure rate drops to 0% as annual income reached about 1,000,000. 
+Unfortunately, there is a sudden spike on failure rate at around 1,250,000 annual income. 
+This may be an outlier where loaners might be overly confident with their ability to repay the loan. 
+Loaners earning above this seems to have no repayment failure.
+
+### 2.2.3 Failure rate by Debt to Income Ratio
+
+![Failure rate by Debt to Income Ratio](data/analysis/failure_rate_by_debt_to_income_ratio.jpg)
+
+The figure shows the relationship failure rate and the debt to income ratio. 
+The data binning of 20 bins had been performed. 
+
+Straight of the bat, an outlier is visible at about 95% debt to income ratio. 
+Having a debt of 95 times the income with zero failure repayment is not logically sound. 
+Ignoring the outlier, the relationship between Failure rate and the debt to income ratio has a positive correlation. 
+The higher the debt to income ration, the higher the failure rate. 
+In layman terms, the less the debt, the less probable to fail the repayment. 
+This aligns to our common sense.
+
+### 2.2.4 Failure rate by Employment Length
+
+![Failure rate by Employment Length](data/analysis/failure_rate_by_employment_length.jpg)
+
+The figure shows the relationship failure rate and the Employment rate. 
+For this analysis, the data preprocessing function was repurpose for generating line graph. 
+The value employment length = 0 was filtered out because value 0 indicate Null value.
+
+Generally, the line graph indicate a low positive relationship between employment length and the failure rate. 
+The failure fluctuate between 13% to 16% of failure rate. 
+The increases in failure rate may due to increase in debt, loan, and or commitments.
+
+### 2.2.5 Failure rate by Home Ownership
+
+![Failure rate by Home Ownership](data/analysis/failure_rate_by_home_ownership.jpg)
+
+This figure shows the failure rates between different home ownerships. 
+This may be counter-intuitive, but the data shows that does not own a home hav ethe highest failure rate despite being 1 less monthly commitments compared to other populations. Owning a home, rent, or mortgage it varies in failure rates between 14% to 16%. Other type of ownership (this includes unkown types) has as high as 23% failure rate, just below None ownership.
+These might suggest that people with no ownership of a home, is a person who does not have enough income to live in a home.
+Hence, the high failure rate.
+
+### 2.2.6 Failure rate by Installments
+
+![Failure rate by Installments](data/analysis/failure_rate_by_installment.jpg)
+
+This figure shows the failure rates across the monthly installments.
+Unlike any other, the monthly installment may not have any relationship with the failure to repay. 
+The failure rate does fluctuate around 16%, ranging from 7.89% to 25.93%. 
+Common sense dictates that the higher the installment, the more probable to fail repayments. 
+However, The current requirements enforced by the financial institutions to approve a loan may result to a steady repayment ability to installment ratio. 
+However, Installments at the higher end may be unpredictable it starts to fluctuate on a very high variance.
+
+### 2.2.7 Summary
+
+From the above analysis, we can conclude that:
+- Failure of repayment is a rare case.
+- Higher income does help prevent failure to repay, but there are inbetween where they might be overly confident to be able to repay and taking larger risk in applying a loan.
+- Higher the debt, the more likely to fail repayment.
+- The longer you work, does not necessarily mean you are more capable of repaying the loan.
+- Be careful to apply a loan if you don't have any type of owning a home.
+- Monthly installments may not be the factor of failure repayment 
+
+### 2.3 Data Preprocessing
+
+Before begin to train the AI models, data preprocessing needs to be done. In this project, 5 main data processing steps had be done.
 
 - Feature Extraction
 - Transformation
 - Handling Missing Value
 - Normalisation
+- Remove Irrelevant Column
 
-#### 2.2.1 Feature Extraction
+#### 2.3.1 Feature Extraction
 
 The list of generated column are as below, along with their decriptions
 
-1. meet_credit_policy
-   - Extracted from 'loan_status' column
-   - 1 represents 'meet the credit policy'
-   - 0.5 represents ambiguous, unknown or not sure. (This includes any unexpected values)
-   - 0 represents 'does not meet the credit policy' 
-   - Reason of extraction: loan_status column contains additional data about the meeting the credit policy.
-2. purpose_asset_type
-   - Extracted from 'purpose' column
-   - 1 represents Assets (possible investment)
-   - 0.5 represents ambiguous, unknown or not sure. (This includes any unexpected values)
-   - 0 represents Expenses
-   - Reason of extraction: 'purpose' column can be categorised in multiple ways that seems to be important in determining repayment failure
-3. purpose_essential
-   - Extracted from 'purpose' column
-   - 1 represents essential spending
-   - 0.5 represents ambiguous, unknown or not sure. (This includes any unexpected values)
-   - 0 represents nonessential spending
-   - Reason of extraction: 'purpose' column can be categorised in multiple ways that seems to be important in determining repayment failure
-4. exist_months_since_last_delinquency
-   - Extracted from 'months_since_last_delinquency' column
-   - 1 represents existence of last delinquency
-   - 0.5 represents unknown, for what ever reason if failed to identify 0 or 1
-   - 0 represents no delinquency
-   - Reason of extraction: 'months_since_last_delinquency' column does not have any appropriate value for Null values. Setting the Null value to 0 would be misleading. 0 may indicate zero delinquency, instead of unknown.
+| Feature Name | Extraction Column | Values                                                                | Reason of Extraction |
+|--------------|------------------|-----------------------------------------------------------------------|----------------------|
+| meet_credit_policy | loan_status | 1: meets policy<br>0.5: ambiguous<br>0: does not meet                 | loan_status column contains additional data about the meeting the credit policy. |
+| purpose_asset_type | purpose | 1: Assets<br>0.5: Ambiguous<br>0: Expenses                            | purpose column can be categorized in multiple ways |
+| purpose_essential | purpose | 1: essential spending<br>0.5: Ambiguous<br>0: nonessential            | purpose column can be categorized in multiple ways |
+| exist_months_since_last_delinquency | months_since_last_delinquency | 1: existence of last delinquency<br>0.5: unknown<br>0: no delinquency | Handling null values in months_since_last_delinquency column |
 
-#### 2.2.2 Transformation
+Below are the sample code snipet for the following feature extraction.
+``` python
+def extract_meet_credit_policy(loan_status):
+    """
+        - 1 represents 'meet the credit policy'
+        - 0.5 represents ambiguous, unknown or not sure.
+        - 0 represents 'does not meet the credit policy'
+    """
+    try:
+        loan_status = loan_status.lower()
+        if "does not meet the credit policy" in loan_status:
+            return 0
+        else:
+            return 1
+    except:
+        return 0.5
+```
+
+#### 2.3.2 Transformation
 
 1. Transform Categorical Numeric Data into Numerical Data
 
@@ -187,7 +290,7 @@ def transform_address_state(state):
         return 0
 ```
 
-#### 2.2.3 Handling Missing Value
+#### 2.3.3 Handling Missing Value
 
 1. Handling Missing Value in Numeric data
 
@@ -241,7 +344,7 @@ def transform_home_ownership(text):
         return 23.20
 ```
 
-#### 2.2.4 Normalisation
+#### 2.3.4 Normalisation
 
 After feature extraction, transformation, and handling missing data, all values in all column are now in numeric values.
 The variety of range of each columns are vast. 
@@ -264,7 +367,7 @@ def transform_home_ownership(text):
         return 23.20
 ```
 
-#### 2.2.5 Remove Irrelevant Column
+#### 2.3.5 Remove Irrelevant Column
 
 There are several columns that are irrelevant and are removed before AI Training process. 
 The list of columns to remove were not specified. 
@@ -278,107 +381,6 @@ However, the list of columns to use in training the Models are specified under [
 | loan_status      | loan status may include information after it was known to have failed repayment. Moreover, each categories consist of a single repay_fail class. |
 | all date columns | as mentioned, all date data are irrelevant.                                                                                                      |
 
-### 2.3 Exploratory Data Analysis (EDA)
-EDA was conducted to understand the relationships between the features and the target variable.
-As the target variable is the `repay_fail`, repayment failure rate will be used to measure how bad the given situations are.
-The repayment Failure rate is calculated during data binning as
-```python
-temp_df = temp_df.groupby(column_for_x_axis, observed=True)['failure_rate'].mean().reset_index()
-```
-Before the code executes this code, the `failure_rate`'s value are equals to the `repay_fail` column. 
-Note that the mean function is used. 
-In a string of 0's and 1's, the percentage of 1's is the same as the mean.
-
-Example, if we have a column with values [0, 0, 1, 1, 0, 1], 
-the mean of this column would be **(0 + 0 + 1 + 1 + 0 + 1) /6 = 0.5**, which is equivalent to a repayment failure rate of where **3/6 = 0.5**.
-
-This method is used to have more understanding on the probability to fail the repayment given a case.
-For example, later in the analysis, it was known that failure rate of a person if owns a home, is about 15.58%.
-The higher failure rate, the more probable for it to fail repayment.
-
-The following insights were gained:
-
-#### 2.3.1 Loan Repayment Failure
-The target variable `repay_fail` has 2 distinct values, 1 for failure and 0 for success. 
-Unfortunately, the distribution are highly imbalanced. 
-
-![Class Distribution](data/analysis/repay_fail_distribution.jpg)
-
-About 5,829 out of 38,480 (15.15%) of the dataset are under failure class. 
-These may pose difficulties during AI training. 
-However, several steps are made to handle these types of situations. 
-Additionaly, low populations of failure may indicate that the company's 
-current policy for applying a loan has an effective approval requirements.
-
-#### 2.3.2 Failure Rate by Annual Income
-
-![Failure Rate by Annual Income](data/analysis/failure_rate_by_annual_income.jpg)
-
-The figure shows the relationship failure rate and the annual income. 
-The data binning of 20 bins had been performed. 
-
-This generally shows that income and repayment failure have a low inverse correlations. 
-As income increases, repayment failure rate decreases. 
-The failure rate drops to 0% as annual income reached about 1,000,000. 
-Unfortunately, there is a sudden spike on failure rate at around 1,250,000 annual income. 
-This may be an outlier where loaners might be overly confident with their ability to repay the loan. 
-Loaners earning above this seems to have no repayment failure.
-
-### 2.3.3 Failure rate by Debt to Income Ratio
-
-![Failure rate by Debt to Income Ratio](data/analysis/failure_rate_by_debt_to_income_ratio.jpg)
-
-The figure shows the relationship failure rate and the debt to income ratio. 
-The data binning of 20 bins had been performed. 
-
-Straight of the bat, an outlier is visible at about 95% debt to income ratio. 
-Having a debt of 95 times the income with zero failure repayment is not logically sound. 
-Ignoring the outlier, the relationship between Failure rate and the debt to income ratio has a positive correlation. 
-The higher the debt to income ration, the higher the failure rate. 
-In layman terms, the less the debt, the less probable to fail the repayment. 
-This aligns to our common sense.
-
-### 2.3.4 Failure rate by Employment Length
-
-![Failure rate by Employment Length](data/analysis/failure_rate_by_employment_length.jpg)
-
-The figure shows the relationship failure rate and the Employment rate. 
-For this analysis, the data preprocessing function was repurpose for generating line graph. 
-The value employment length = 0 was filtered out because value 0 indicate Null value.
-
-Generally, the line graph indicate a low positive relationship between employment length and the failure rate. 
-The failure fluctuate between 13% to 16% of failure rate. 
-The increases in failure rate may due to increase in debt, loan, and or commitments.
-
-### 2.3.5 Failure rate by Home Ownership
-
-![Failure rate by Home Ownership](data/analysis/failure_rate_by_home_ownership.jpg)
-
-This figure shows the failure rates between different home ownerships. 
-This may be counter-intuitive, but the data shows that does not own a home hav ethe highest failure rate despite being 1 less monthly commitments compared to other populations. Owning a home, rent, or mortgage it varies in failure rates between 14% to 16%. Other type of ownership (this includes unkown types) has as high as 23% failure rate, just below None ownership.
-These might suggest that people with no ownership of a home, is a person who does not have enough income to live in a home.
-Hence, the high failure rate.
-
-### 2.3.6 Failure rate by Installments
-
-![Failure rate by Installments](data/analysis/failure_rate_by_installment.jpg)
-
-This figure shows the failure rates across the monthly installments.
-Unlike any other, the monthly installment may not have any relationship with the failure to repay. 
-The failure rate does fluctuate around 16%, ranging from 7.89% to 25.93%. 
-Common sense dictates that the higher the installment, the more probable to fail repayments. 
-However, The current requirements enforced by the financial institutions to approve a loan may result to a steady repayment ability to installment ratio. 
-However, Installments at the higher end may be unpredictable it starts to fluctuate on a very high variance.
-
-### 2.3.7 Summary
-
-From the above analysis, we can conclude that:
-- Failure of repayment is a rare case.
-- Higher income does help prevent failure to repay, but there are inbetween where they might be overly confident to be able to repay and taking larger risk in applying a loan.
-- Higher the debt, the more likely to fail repayment.
-- The longer you work, does not necessarily mean you are more capable of repaying the loan.
-- Be careful to apply a loan if you don't have any type of owning a home.
-- Monthly installments may not be the factor of failure repayment 
 
 ### 2.4 Correlation Of Features With Repayment Failure
 
@@ -407,10 +409,6 @@ The 10  least correlations are as follows:
 38. employment_length                      (0.005634)
 39. revolving_utillization                 (0.002154)
 
-### 2.5 How to Initiate Data Anaylsis
-
-To initiate data analysis process, simply run the [01_data_analysis.py](02_data_preparation.py) file.
-
 ## 3.0 Train Test Data Splitting
 
 The dataset is split into 80:20. The 80% of the dataset is used as the training dataset, while the other 20% is used for testing dataset.
@@ -430,9 +428,11 @@ The training and testing dataset are as below:
 | repay_fail = 0  | 4,663 (50.00%)   | 6,531 (84.85%)  |
 | repay_fail = 1  | 4,663 (50.00%)   | 1,166 (15.15%)  |
 
-### 3.1 How to Initiate Train Test Data Splitting
+### 3.1 How to Initiate Data Preprocessing and Train Test Data Splitting
 
-To initiate data analysis process, simply run the [02_data_preparation.py](02_data_preparation.py) file.
+To initiate data preprocessing and train test data splitting process, simply run the [02_data_preparation.py](02_data_preparation.py) file.
+Note that some Randomness still exist in Data precessing despite several measures had been done to prevent randomness.
+Generating new training data will result in different AI Model performance.
 
 ## 4.0 AI Training and Testing
 
@@ -540,6 +540,14 @@ distribution of `repay_fail = 0` is 84.85%. which means, if the model only predi
 This would have 'high accuracy' but unable to be used to predict failure repayments. 
 However, high accuracy means that false positive and false negative in a production environment will rarely occur.
 
+### 4.1.5 How to Initiate ANN Training and Testing
+
+To initiate ANN training, you must first 
+
+1. Configure the parameter in [config/config.yaml](config/config.yaml) under `ML_TRAINING` key. 
+2. Simply run the [03_train_test_ann.py](03_train_test_ann.py) file.
+3. Once trained, the script will output the results. Enter `y` to overwrite the trained model. The trained model will be written [here](trained_model/ann_model/predict_loan_repay_fail_model.keras) along with other performance analysis.
+
 ### 4.2 K-Nearest Neighbors (K-NN)
 
 K-Nearest Neighbors (K-NN) is a simple yet powerful supervised learning algorithm that predicts the output of 
@@ -611,6 +619,14 @@ These noisy data and outliers may be the root cause of low performing K-NN, beca
 but rather compare the similarity of the new data to an existing data.
 To improve the model's performance, 
 it's essential to address these issues and focus on increasing the sensitivity to detect more true positive instances accurately.
+
+### 4.1.5 How to Initiate K-NN Training and Testing
+
+To initiate K-NN training, you must...
+
+1. Configure the parameter in [config/config.yaml](config/config.yaml) under `KNN_TRAINING` key. Note that this is different from ANN Training, which the key is `ML_TRAINING`
+2. Simply run the [03_train_test_knn.py](03_train_test_knn.py) file.
+3. Once trained, the script will output the results. Enter `y` to overwrite the trained model. The trained model will be written [here](trained_model/ann_model/predict_loan_repay_fail_model.keras) along with other performance analysis.
 
 ### 4.3 Summary
 
