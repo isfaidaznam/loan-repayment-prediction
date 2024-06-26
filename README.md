@@ -51,8 +51,8 @@ This generally shows that income and repayment failure have a low inverse correl
 As income increases, repayment failure rate decreases. 
 The failure rate drops to 0% as annual income reached about 1,000,000. 
 Unfortunately, there is a sudden spike on failure rate at around 1,250,000 annual income. 
-This may be an outlier where loaners might be overly confident with their ability to repay the loan. 
-Loaners earning above this seems to have no repayment failure.
+This may be an outlier where borrower's might be overly confident with their ability to repay the loan. 
+Borrower's earning above this level seems to have no repayment failure.
 
 ### 2.2.3 Failure rate by Debt to Income Ratio
 
@@ -385,29 +385,65 @@ However, the list of columns to use in training the Models are specified under [
 ### 2.4 Correlation Of Features With Repayment Failure
 
 After data preprosessing, the correlation between columns to the target variable is calculated by using the `df.corr()` function.
-The top 10 highest correlation are as follows:
-1. loan_status (0.996121)
-2. total_received_principal (0.343545)
-3. total_payment (0.247532)
-4. total_payment_investors (0.245041)
-5. last_payment_date (0.224867)
-6. last_payment_amnt (0.220326)
-7. interest_rate (0.199220) 
-8. term (0.134424) 
-9. inquiries_last_6mths (0.111648) 
-10. purpose (0.099498)
 
-The 10  least correlations are as follows:
-30. no_delinquency_2yrs (0.020505)
-31. revolving_balance (0.018877)
-32. total_received_interest (0.017384)
-33. earliest_credit_line (0.016971)
-34. member_id (0.011849)
-35. funded_amount_investors (0.009565)
-36. id (0.008377)
-37. no_open_accounts (0.006294)
-38. employment_length                      (0.005634)
-39. revolving_utillization                 (0.002154)
+| No. | Preprocessed Column                 | Strength Of Correlation with repay_fail column |
+|-----|-------------------------------------|------------------------------------------------|
+| 1   | loan_status                         | 0.996121                                       |
+| 2   | total_received_principal            | 0.343545                                       |
+| 3   | total_payment                       | 0.247532                                       |
+| 4   | total_payment_investors             | 0.245041                                       |
+| 5   | last_payment_date                   | 0.224867                                       |
+| 6   | last_payment_amnt                   | 0.220326                                       |
+| 7   | interest_rate                       | 0.199220                                       |
+| 8   | term                                | 0.134424                                       |
+| 9   | inquiries_last_6mths                | 0.111648                                       |
+| 10  | purpose                             | 0.099498                                       |
+| 11  | meet_credit_policy                  | 0.093053                                       |
+| 12  | public_records                      | 0.050923                                       |
+| 13  | purpose_essential                   | 0.047439                                       |
+| 14  | next_payment_date                   | 0.045375                                       |
+| 15  | last_credit_pull_date               | 0.042871                                       |
+| 16  | loan_amount                         | 0.042267                                       |
+| 17  | debt_to_income_ratio                | 0.042096                                       |
+| 18  | funded_amount                       | 0.039321                                       |
+| 19  | annual_income                       | 0.038009                                       |
+| 20  | exist_months_since_last_delinquency | 0.036929                                       |
+| 21  | purpose_asset_type                  | 0.034624                                       |
+| 22  | verification_status                 | 0.031944                                       |
+| 23  | home_ownership                      | 0.024818                                       |
+| 24  | issue_date                          | 0.023815                                       |
+| 25  | months_since_last_delinquency       | 0.022288                                       |
+| 26  | address_state                       | 0.020875                                       |
+| 27  | no_total_account                    | 0.020672                                       |
+| 28  | installment                         | 0.020620                                       |
+| 29  | no_delinquency_2yrs                 | 0.020505                                       |
+| 30  | zip_code                            | 0.019506                                       |
+| 31  | revolving_balance                   | 0.018877                                       |
+| 32  | total_received_interest             | 0.017384                                       |
+| 33  | earliest_credit_line                | 0.016971                                       |
+| 34  | Unnamed: 0                          | 0.014215                                       |
+| 35  | member_id                           | 0.011849                                       |
+| 36  | funded_amount_investors             | 0.009565                                       |
+| 37  | id                                  | 0.008377                                       |
+| 38  | no_open_accounts                    | 0.006294                                       |
+| 39  | employment_length                   | 0.004179                                       |
+| 40  | revolving_utillization              | 0.002034                                       |
+
+From the data above, It seems that `loan_status` is the only column that have the strong correlation with the `repay_fail` column. 
+However, as mentioned in "**2.3.5 Remove Irrelevant Column**", the column is expected to be available and labeled after failure to repay occurs.
+
+Aside from `loan_status` column, the `total_received_principal`, `total_payment`, `total_payment_investors`, and `last_payment_amnt` is the
+top 4 most correlated columns to failure of repayment, with correlations ranging from 0.343545 to 0.247532. 
+These columns are all related to the amount of money, either received or paid, which suggests
+that the ability to repay loans is closely tied to the borrower's financial situation.
+
+It's interesting to note that the `interest_rate` column, which one might expect to be highly correlated 
+with repayment failure, has a relatively moderate correlation of 0.199220, seconded by the borrower's financial situation. 
+This could suggest that the interest rate is not the primary driver, but the secondary driver of repayment failure.
+
+On the lower end, the columns `funded_amount_investors`, `no_open_accounts`, `employment_length`, and `revolving_utillization` 
+have much weaker correlations with repayment failure than expected. 
+Surprisingly, they have an even lower correlations than the seemingly irrelevant columns `member_id`, `id`, and `Unnamed: 0`.
 
 ## 3.0 Train Test Data Splitting
 
