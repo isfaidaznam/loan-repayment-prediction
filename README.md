@@ -115,6 +115,19 @@ From the above analysis, we can conclude that:
 - Be careful to apply a loan if you don't have any type of owning a home.
 - Monthly installments may not be the factor of failure repayment 
 
+### 3.1 How to Initiate Data Analysis
+
+Before begun any precesses, there are requirements that need to be fulfilled. The following command installs all of the requirement libraries. 
+```
+pip install -r requirements.txt
+```
+
+To initiate data analysis and generating the data visualisations, simply run the [01_data_analysis.py](01_data_analysis.py) file.
+
+```
+python 01_data_analysis.py
+```
+
 ### 2.3 Data Preprocessing
 
 Before begin to train the AI models, data preprocessing needs to be done. In this project, 5 main data processing steps had be done.
@@ -473,9 +486,16 @@ The training and testing dataset are as below:
 
 ### 3.1 How to Initiate Data Preprocessing and Train Test Data Splitting
 
-To initiate data preprocessing and train test data splitting process, simply run the [02_data_preparation.py](02_data_preparation.py) file.
-Note that some Randomness still exist in Data precessing despite several measures had been done to prevent randomness.
+Note that some randomness still exist in data precessing despite several measures had been done to prevent randomness.
 Generating new training data will result in different AI Model performance.
+
+To initiate data preprocessing and train test data splitting process, simply run the [02_data_preparation.py](02_data_preparation.py) file.
+
+```
+python 02_data_preparation.py
+```
+
+
 
 ## 4.0 AI Training and Testing
 
@@ -589,6 +609,9 @@ To initiate ANN training, you must first
 
 1. Configure the parameter in [config/config.yaml](config/config.yaml) under `ML_TRAINING` key. 
 2. Simply run the [03_train_test_ann.py](03_train_test_ann.py) file.
+```
+python 03_train_test_ann.py
+```
 3. Once trained, the script will output the results. Enter `y` to overwrite the trained model. The trained model will be written [here](trained_model/ann_model/predict_loan_repay_fail_model.keras) along with other performance analysis.
 
 ### 4.2 K-Nearest Neighbors (K-NN)
@@ -669,6 +692,9 @@ To initiate K-NN training, you must...
 
 1. Configure the parameter in [config/config.yaml](config/config.yaml) under `KNN_TRAINING` key. Note that this is different from ANN Training, which the key is `ML_TRAINING`
 2. Simply run the [03_train_test_knn.py](03_train_test_knn.py) file.
+```
+python 03_train_test_knn.py
+```
 3. Once trained, the script will output the results. Enter `y` to overwrite the trained model. The trained model will be written [here](trained_model/ann_model/predict_loan_repay_fail_model.keras) along with other performance analysis.
 
 ### 4.3 Model Comparison
@@ -771,4 +797,7 @@ If you are considering to test on new data, you can follow these steps.
 
 1. Configure the new data [here](input_for_prediction.yaml).
 2. Simply run the [04_predict_loan_repay_fail.py](04_predict_loan_repay_fail.py) file.
+```
+python 04_predict_loan_repay_fail.py
+```
 3. Follow the instructions given. The predictions will be printed out.
