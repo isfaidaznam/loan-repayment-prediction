@@ -1,12 +1,17 @@
 # Loan Repayment Failure Prediction using AI/ML Models
 ## 1.0 Introduction
 
-This project aims to develop an AI/ML model that can predict whether existing borrowers will fail to repay their loans. The model will be trained on a historical dataset of borrowers, their features/characteristics, and whether they've failed to repay their loan.
+The project aims to develop an AI/ML model to predict loan repayment failure using a historical dataset of borrowers, 
+their features, and loan characteristics. 
+The problem is significant as it can help financial institutions identify potential defaulters and take preventive 
+measures to minimize losses.
 
 ## 2.0 Dataset Analysis
 ### 2.1 Initial Data Inspection
 
-The provided dataset contains a whooping 38,480 total number of unique rows and 36 columns. The target variable is `repay_fail`, which indicates whether the borrower failed to repay the loan.
+The dataset contains 38,480 unique rows and 36 columns, including borrower characteristics, loan 
+features, and a target variable indicating whether the borrower failed to repay the loan. 
+The dataset is imbalanced, with only 15.15% of instances labeled as failure (`repay_fail` = 1).
 
 ### 2.2 Exploratory Data Analysis (EDA)
 EDA was conducted to understand the relationships between the features and the target variable.
@@ -348,23 +353,24 @@ def transform_home_ownership(text):
 
 After feature extraction, transformation, and handling missing data, all values in all column are now in numeric values.
 The variety of range of each columns are vast. 
-Some reaches 6,000,000 some are negative numbers. 
-Normalizing the values into a (-1,1) range is used on all columns.
+Some feature reaches as high as 6,000,000. 
+Normalizing the values into a (-1,1) range is used on all columns to ensure that all 
+features have a similar distribution and contribute equally to the model's learning process. 
+In particular, using a range of (-1, 1) is beneficial when dealing with datasets that contain outliers, 
+as it allows these extreme values to be captured and preserved, rather than being compressed towards the upper bound of 1. 
+This helps to prevent the outliers from dominating the model's learning process.
 
 Below is an example code snipet for the following normalisation.
 ``` python
-def transform_home_ownership(text):
-    # The values where set based on failure rate that was calculated within 01_data_analysis.py
-    dict = {"own" : 15.58,
-            "rent" : 15.83,
-            "mortgage" : 14.28,
-            "other" : 23.20,
-            "none" : 25.00}
-    if text.lower() in dict.keys():
-        return dict[text.lower()]
-    else:
-        # any other value will set to as "other" home ownership
-        return 23.20
+def normalise(df):
+    scaler = MinMaxScaler(feature_range=(-1, 1))
+    for column_name in df.keys():
+        df[column_name] = scaler.fit_transform(df[[column_name]])
+        if not os.path.exists("config/scaler"):
+            os.makedirs("config/scaler")
+        with open(f'config/scaler/{column_name}_scaler.pkl', 'wb') as f:
+            pickle.dump(scaler, f)
+    return df
 ```
 
 #### 2.3.5 Remove Irrelevant Column
