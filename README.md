@@ -325,6 +325,10 @@ These 2 distinct algorithm is chosen due their key differences.
 
 ### 4.1 Artificial Neural Network (ANN)
 
+An Artificial Neural Network (ANN) is a computational model inspired by the structure and function of the human brain, composed of interconnected nodes or "neurons" that process and transmit information. 
+ANNs are designed to recognize patterns in data and learn from it, enabling them to make predictions, classify objects, and solve complex problems.
+Through a process of training and optimization, ANNs can adapt and improve their performance, making them a powerful tool in AI and ML.
+
 #### 4.1.1 Model Architecture
 
 Layer 1  : 
@@ -347,11 +351,26 @@ Layer 4  :
    - 1 nodes
    - sigmoid activation
 
+The Model Architecture of this Artificial Neural Network (ANN) consists of four dense layers, 
+with the first two layers having 32 and 33 nodes, respectively, using the ReLU activation function 
+to introduce non-linearity. 
+The third layer also has 33 nodes, but uses the sigmoid activation function, 
+which is often used for binary classification problems. 
+The final layer has a single node with sigmoid activation.
+A single output node is decided because the model is designed to predict only `repay_fail`.
+
+A variations of combinations of layer configurations was tested. 
+The above configurations seems to have the best results so far. 
+
 #### 4.1.2 Training Parameter
 
 - number of epoch = 10
 - optimizer  = adam optimizer
 - loss function = mean absolute error
+
+The training parameters for this Artificial Neural Network (ANN) model are set to run for 10 epochs, utilizing the Adam optimizer to update model weights. 
+The mean absolute error (MAE) is used as the loss function, which measures the average difference between predicted and actual values.
+These settings aim to optimize the model's performance and minimize the error in its predictions.
 
 #### 4.1.3 Training Curve
 
@@ -374,7 +393,7 @@ This shows that the Model has been over fitting. Therefore, 10 epoch is all we n
 
 #### 4.1.4 Performance
 
-Confusion Matrix
+**Confusion Matrix**
 
 | Actual \ Predicted | Predicted 0 | Predicted 1 |
 |--------------------|-------------|-------------|
@@ -389,9 +408,10 @@ False Positive  : 25
 
 False Negative  : 86
 
-Accuracy : 98.56%
-
-Sensitivity: 92.62%
+| Matrix      | Score  |
+|-------------|--------|
+| Accuracy    | 98.56% |
+| Sensitivity | 92.62% |
 
 Looking into the performance, Overall results looks good. The key metric to consider is the Sensitivity. 
 Sensitivity shows how much positive can the model predicted correctly. 
@@ -405,18 +425,41 @@ However, high accuracy means that false positive and false negative in a product
 
 ### 4.2 K-Nearest Neighbors (K-NN)
 
-#### 4.1.1 Model Architecture
+K-Nearest Neighbors (K-NN) is a simple yet powerful supervised learning algorithm that predicts the output of 
+a new instance by finding the most similar instances, or "nearest neighbors," in the training data. 
+The algorithm works by calculating the distance between the new instance and each training instance, 
+and then selecting the K most similar ones to determine the predicted output. 
+By weighing the importance of each neighbor based on their proximity, K-NN 
+can effectively classify new instances and make predictions, making it a popular 
+choice for classification and regression tasks.
+
+#### 4.1.1 Model Configuration
+
+| Configuration | Value     | 
+|---------------|-----------|
+| algorithm     | auto      |
+| leaf_size     | 30        |
+| metric        | minkowski |
+| metric_params | None      |
+| n_jobs        | None      |
+| n_neighbors   | 7         |
+| p             | 2         |
+| weights       | uniform   |
+
+The K-Nearest Neighbors (K-NN) algorithm is configured to automatically determine the optimal algorithm, with a leaf size of 30 and using the Minkowski metric with a power parameter of 2. 
+The model will utilize 7 nearest neighbors for prediction, with uniform weights assigned to each neighbor. 
+The number of jobs and metric parameters are set to default values, with no specific configuration.
 
 #### 4.1.2 Training Parameter
 
 - nearest neighbors = 7
 
-#### 4.1.3 Training Curve
+`Nearest neighbors` parameter had been change between 1 to 20. 
+The best Sensitivity score is when `nearest neighbors = 7`.
 
+#### 4.2.3 Performance
 
-#### 4.2.4 Performance
-
-Confusion Matrix
+**Confusion Matrix**
 
 | Actual \ Predicted | Predicted 0 | Predicted 1 |
 |--------------------|-------------|-------------|
@@ -431,9 +474,10 @@ False Positive  : 1,496
 
 False Negative  : 300
 
-Accuracy : 76.67%
-
-Sensitivity: 74.27%
+| Matrix      | Score  |
+|-------------|--------|
+| Accuracy    | 76.67% |
+| Sensitivity | 74.27% |
 
 Looking into the performance, overall results look decent. 
 Note that the key metric to consider is the Sensitivity. 
