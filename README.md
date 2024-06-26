@@ -757,9 +757,18 @@ The key metrix to consider is the sensitivity due to the fact that `repay_fail` 
 preventive measures need to be made on all borrowers that are predicted to fail repayment. 
 There is no harm done if preventive measures were made on borrowers that are predicted as able to repay.
 The ANN model achieved a sensitivity of 95.88%, while the K-NN model achieved a sensitivity of 78.56%. 
+Additionally, ANN model achieve an over the top accuracy of 98.16%.
 Based on these results, the ANN model is the best choice for Loan Repayment Failure Prediction Model.
 
 For future works, we recommend addressing class imbalance, exploring temporal data, model selection, hyperparameter 
 tuning, model interpretability, and deployment and monitoring. 
 These improvements can help enhance the model's performance, provide better insights, and 
 ensure its effectiveness in a production environment.
+
+## 7.0 Testing Out the Trained Model on New Data
+
+If you are considering to test on new data, you can follow these steps.
+
+1. Configure the new data [here](input_for_prediction.yaml).
+2. Simply run the [04_predict_loan_repay_fail.py](04_predict_loan_repay_fail.py) file.
+3. Follow the instructions given. The predictions will be printed out.
