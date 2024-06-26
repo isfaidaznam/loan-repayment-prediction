@@ -142,12 +142,12 @@ Before begin to train the AI models, data preprocessing needs to be done. In thi
 
 The list of generated column are as below, along with their decriptions
 
-| Feature Name                        | Extraction Column             | Values                                                                 | Reason of Extraction                                                             |
-|:------------------------------------|:------------------------------|:-----------------------------------------------------------------------|:---------------------------------------------------------------------------------|
-| meet_credit_policy                  | loan_status                   | 1: meets policy<br>0.5: ambiguous<br>0: does not meet                  | loan_status column contains additional data about the meeting the credit policy. |
-| purpose_asset_type                  | purpose                       | 1: Assets<br>0.5: Ambiguous<br>0: Expenses                             | purpose column can be categorized in multiple ways                               |
-| purpose_essential                   | purpose                       | 1: essential spending<br>0.5: Ambiguous<br>0: nonessential             | purpose column can be categorized in multiple ways                               |
-| exist_months_since_last_delinquency | months_since_last_delinquency | 1: existence of last delinquency<br>0.5: unknown<br>0: no delinquency  | Handling null values in months_since_last_delinquency column                     |
+| Feature Name                         | Extraction Column              | Values Assigned with their meanings                                           | Reason of Extraction                                                             |
+|:-------------------------------------|:-------------------------------|:------------------------------------------------------------------------------|:---------------------------------------------------------------------------------|
+| meet_credit_policy                   | loan_status                    | 1: meets policy<br><br>0.5: ambiguous<br><br>0: does not meet                 | loan_status column contains additional data about the meeting the credit policy. |
+| purpose_asset_type                   | purpose                        | 1: Assets<br><br>0.5: Ambiguous<br><br>0: Expenses                            | purpose column can be categorized in multiple ways                               |
+| purpose_essential                    | purpose                        | 1: essential spending<br><br>0.5: Ambiguous<br><br>0: nonessential            | purpose column can be categorized in multiple ways                               |
+| exist_months_since_ last_delinquency | months_since_ last_delinquency | 1: existence of last delinquency<br><br>0.5: unknown<br><br>0: no delinquency | Handling null values in months_since_last_delinquency column                     |
 
 Below is an example code snipet for the following feature extraction.
 ``` python
