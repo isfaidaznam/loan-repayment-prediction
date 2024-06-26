@@ -3,8 +3,8 @@ ML_TRAINING:
   EPOCH: 10
   RANDOMNESS: False
   HIDDEN_LAYER:
-    - RELU: 33
-    - SIGMOID: 33
+    - RELU: 27
+    - SIGMOID: 27
     - SIGMOID: 1
   INPUT:
     - total_received_principal
@@ -35,10 +35,6 @@ ML_TRAINING:
     - revolving_balance
     - total_received_interest
     - earliest_credit_line
-    - funded_amount_investors
-    - no_open_accounts
-    - employment_length
-    - revolving_utillization
 KNN_TRAINING:
   TRAIN_SPLIT: 80
   N_NEIGHBOR: 7
@@ -72,7 +68,3 @@ KNN_TRAINING:
     - revolving_balance
     - total_received_interest
     - earliest_credit_line
-    - funded_amount_investors
-    - no_open_accounts
-    - employment_length
-    - revolving_utillization
