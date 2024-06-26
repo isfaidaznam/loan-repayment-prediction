@@ -190,7 +190,7 @@ def transform_revolving_utillization(text):
         new_text = "".join([s for s in text.lower() if s == "." or s.isdigit()])
         return float(new_text)
     except:
-        return 0
+        return -1
 ```
 
 ##### 2.3.2.2 Transform Non-Ordinal Categorical data into Numerical Data
@@ -247,7 +247,7 @@ def transform_date(date_text):
     try:
         return date_text.timestamp()
     except:
-        return 0
+        return -1
 ```
 
 However, all these column were removed at the final stage before training the model. 
@@ -274,7 +274,7 @@ def transform_zip_code(zip_code):
         new_zip_code = str(zip_code)[:3]
         return float(new_zip_code)
     except:
-        return 0
+        return -1
 ```
 
 ##### 2.3.2.5 Transform Address State Data into Numerical Data
@@ -305,7 +305,7 @@ def transform_address_state(state):
         base26_value += 1
         return base26_value
     except:
-        return 0
+        return -1
 ```
 
 #### 2.3.3 Handling Missing Value
