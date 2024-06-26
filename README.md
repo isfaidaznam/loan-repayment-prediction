@@ -62,6 +62,16 @@ With some form of variations to handle each column's different needs, this kind 
 - employment_length
 - revolving_utillization
 
+Below are the sample code snipet for the following transformation.
+``` python
+def transform_revolving_utillization(text):
+    try:
+        new_text = "".join([s for s in text.lower() if s == "." or s.isdigit()])
+        return float(new_text)
+    except:
+        return 0
+```
+
 2. Transform Non-Ordinal Categorical data into Numerical Data
 
 For this transformation, it converts Ordinal data into numerical data using various methods. 
@@ -81,6 +91,22 @@ With some form of variations to handle each column's different needs, this kind 
 - verification_status 
 - purpose
 
+Below are the sample code snipet for the following transformation.
+``` python
+def transform_home_ownership(text):
+    # The values where set based on failure rate that was calculated within 01_data_analysis.py
+    dict = {"own" : 15.58,
+            "rent" : 15.83,
+            "mortgage" : 14.28,
+            "other" : 23.20,
+            "none" : 25.00}
+    if text.lower() in dict.keys():
+        return dict[text.lower()]
+    else:
+        # any other value will set to as "other" home ownership
+        return 23.20
+```
+
 3. Transform Date Data into Numerical Data
 
 For this transformation, it converts date data into numerical data using the timestamp method.
@@ -93,6 +119,15 @@ These transformation were applied on all date type columns such as the following
 - last_payment_date
 - next_payment_date
 - last_credit_pull_date
+
+Below are the sample code snipet for the following transformation.
+``` python
+def transform_date(date_text):
+    try:
+        return date_text.timestamp()
+    except:
+        return 0
+```
 
 However, all these column were removed at the final stage before training the model. 
 These may not be relevant as the question of 'when' did the person pay or 'when' is the issue date and other, may not effect the failure repayment.
@@ -111,6 +146,16 @@ Additionally, zipcodes can be sorted as a numerical scale.
 Generally, zipcode of 43100 is nearby to zipcode 43100 physically.
 Hence, the 'zip_code' column is converted into a numerical value.
 
+Below are the code snipet for the following transformation.
+``` python
+def transform_zip_code(zip_code):
+    try:
+        new_zip_code = str(zip_code)[:3]
+        return float(new_zip_code)
+    except:
+        return 0
+```
+
 5. Transform Address State Data into Numerical Data
 
 For this transformation, it converts address state data into numerical data using a base 26 conversion method. 
@@ -124,6 +169,23 @@ Unlike converting zipcode, the address state does not represent any physical rel
 For example, address code "KJ" does not sit next to "KK".
 The 'address_state' column is converted into a numerical value, solely to be able to be process further.
 Zipcodes may have more correlations than address state.
+
+Below are the sample code snipet for the following transformation:
+``` python
+def transform_address_state(state):
+    try:
+        state = str(state).upper()
+        base26_value = 0
+        for char in state:
+            # in ASCII, A is 65, B is 66, C is 67 ...
+            # the "ord(char) - 64" returns the position of the char
+            base26_value = base26_value * 26 + ord(char) - 64
+        # value '0' will be reserved for unknown, absent value, etc. hence, address state of "A" is 1 instead of 0.
+        base26_value += 1
+        return base26_value
+    except:
+        return 0
+```
 
 #### 2.2.3 Handling Missing Value
 
@@ -141,6 +203,18 @@ This method applies to columns including, but not limited to:
 - no_open_accounts
 - public_records
 
+Below are the sample code snipet for the following method:
+``` python
+def transform_nan_num(value):
+    try:
+        if not math.isnan(float(value)):
+            return float(value)
+        else:
+            return -1
+    except:
+        return -1
+```
+
 2. Handling Missing Value in Categorical Data
 
 Categorical data that have a defined "other" categories such as "home_ownership" column will be use as an assignment for missing values.
@@ -151,6 +225,22 @@ With some form of variations to handle each column's different needs, this kind 
 - verification_status : Missing values will be treated as "Not Verified"
 - purpose : Missing values will be treated as "other"
 
+Below are the sample code snipet for the following method.
+``` python
+def transform_home_ownership(text):
+    # The values where set based on failure rate that was calculated within 01_data_analysis.py
+    dict = {"own" : 15.58,
+            "rent" : 15.83,
+            "mortgage" : 14.28,
+            "other" : 23.20,
+            "none" : 25.00}
+    if text.lower() in dict.keys():
+        return dict[text.lower()]
+    else:
+        # any other value will set to as "other" home ownership
+        return 23.20
+```
+
 #### 2.2.4 Normalisation
 
 After feature extraction, transformation, and handling missing data, all values in all column are now in numeric values.
@@ -158,12 +248,49 @@ The variety of range of each columns are vast.
 Some reaches 6,000,000 some are negative numbers. 
 Normalizing the values into a (-1,1) range is used on all columns.
 
+Below are the sample code snipet for the following normalisation.
+``` python
+def transform_home_ownership(text):
+    # The values where set based on failure rate that was calculated within 01_data_analysis.py
+    dict = {"own" : 15.58,
+            "rent" : 15.83,
+            "mortgage" : 14.28,
+            "other" : 23.20,
+            "none" : 25.00}
+    if text.lower() in dict.keys():
+        return dict[text.lower()]
+    else:
+        # any other value will set to as "other" home ownership
+        return 23.20
+```
+
+#### 2.2.5 Remove Irrelevant Column
+
+There are several columns that are irrelevant and are removed before AI Training process. 
+The list of columns to remove were not specified. 
+However, the list of columns to use in training the Models are specified under [config/config.yaml](config/config.yaml).
+
+| Column name      | Reason for Removal                                                                                                                               |
+|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| Unnamed: 0       | irrelevant id/indexing values                                                                                                                    |
+| member_id        | irrelevant id/indexing values                                                                                                                    |
+| id               | irrelevant id/indexing values                                                                                                                    |
+| loan_status      | loan status may include information after it was known to have failed repayment. Moreover, each categories consist of a single repay_fail class. |
+| all date columns | as mentioned, all date data are irrelevant.                                                                                                      |
+
 ### 2.3 Exploratory Data Analysis (EDA)
 EDA was conducted to understand the relationships between the features and the target variable.
 As the target variable is the `repay_fail`, repayment failure rate will be used to measure how bad the given situations are.
-The repayment Failure rate is calculated as
+The repayment Failure rate is calculated during data binning as
+```python
+temp_df = temp_df.groupby(column_for_x_axis, observed=True)['failure_rate'].mean().reset_index()
+```
+Before the code executes this code, the `failure_rate`'s value are equals to the `repay_fail` column. 
+Note that the mean function is used. 
+In a string of 0's and 1's, the percentage of 1's is the same as the mean.
 
-   Repayment Failure Rate = Total Fail / Total case X 100
+Example, if we have a column with values [0, 0, 1, 1, 0, 1], 
+the mean of this column would be **(0 + 0 + 1 + 1 + 0 + 1) /6 = 0.5**, which is equivalent to a repayment failure rate of where **3/6 = 0.5**.
 
 This method is used to have more understanding on the probability to fail the repayment given a case.
 For example, later in the analysis, it was known that failure rate of a person if owns a home, is about 15.58%.
@@ -280,9 +407,9 @@ The 10  least correlations are as follows:
 38. employment_length                      (0.005634)
 39. revolving_utillization                 (0.002154)
 
-## 2.5 How to Initiate Data Anaylsis
+### 2.5 How to Initiate Data Anaylsis
 
-To initiate data analysis process, simply run the `01_data_analysis.py` file.
+To initiate data analysis process, simply run the [01_data_analysis.py](02_data_preparation.py) file.
 
 ## 3.0 Train Test Data Splitting
 
@@ -297,12 +424,15 @@ The `prepare_train_test_data` function is used to split the dataset into trainin
 The training dataset is created by taking the first 80% of the samples from each group, and the testing dataset is created by taking the remaining 20% of the samples from each group. The resulting training and testing datasets are saved as CSV files.
 
 The training and testing dataset are as below:
-- Train dataset
-  - `repay_fail = 0`: 4,663 (50.00%)
-  - `repay_fail = 1`: 4,663 (50.00%)
-- Test dataset
-  - `repay_fail = 0`: 6,531 (84.85%)
-  - `repay_fail = 1`: 1,166 (15.15%)
+
+| Class \ Dataset | Training Dataset | Testing Dataset |
+|-----------------|------------------|-----------------|
+| repay_fail = 0  | 4,663 (50.00%)   | 6,531 (84.85%)  |
+| repay_fail = 1  | 4,663 (50.00%)   | 1,166 (15.15%)  |
+
+### 3.1 How to Initiate Train Test Data Splitting
+
+To initiate data analysis process, simply run the [02_data_preparation.py](02_data_preparation.py) file.
 
 ## 4.0 AI Training and Testing
 
@@ -331,25 +461,12 @@ Through a process of training and optimization, ANNs can adapt and improve their
 
 #### 4.1.1 Model Architecture
 
-Layer 1  : 
-   - Layer Dense layer
-   - 32 nodes
-   - relu activation 
-
-Layer 2  : 
-   - Dense layer
-   - 33 nodes
-   - relu activation
-
-Layer 3  : 
-   - Dense layer
-   - 33 nodes
-   - sigmoid activation
-
-Layer 4  : 
-   - Dense layer
-   - 1 nodes
-   - sigmoid activation
+| Layer \ Description    | Layer Type     | Number of Nodes | Activation Function |
+|------------------------|----------------|-----------------|---------------------|
+| Layer 1 (input layer)  | Dense layer    | 32              | ReLU                |
+| Layer 2                | Dense layer    | 33              | ReLU                |
+| Layer 3                | Dense layer    | 33              | Sigmoid             |
+| Layer 4 (output layer) | Dense layer    | 1               | Sigmoid             |
 
 The Model Architecture of this Artificial Neural Network (ANN) consists of four dense layers, 
 with the first two layers having 32 and 33 nodes, respectively, using the ReLU activation function 
@@ -419,7 +536,7 @@ Sensitivity shows how much positive can the model predicted correctly.
 In layman terms, 92.62% of Failure repayment where able to predicted.
 
 The accuracy does not really helps in this case due to the fact that the dataset is highly imbalance. Recall that the 
-distribution of `fail_repay = 0` is 84.85%. which means, if the model only predicts `fail_repay = 0`, the accuracy would be 84.85%.
+distribution of `repay_fail = 0` is 84.85%. which means, if the model only predicts `repay_fail = 0`, the accuracy would be 84.85%.
 This would have 'high accuracy' but unable to be used to predict failure repayments. 
 However, high accuracy means that false positive and false negative in a production environment will rarely occur.
 
