@@ -11,7 +11,7 @@ measures to minimize losses.
 During the development of the Loan Repayment Failure Prediction project, the following assumptions were made:
 
 1. The dataset provided is representative of the target population.
-2. All data are true and fre from human input errors.
+2. All data are true and free from human error.
 3. The relationships and patterns identified in the dataset between borrower characteristics, loan features, and the target variable `repay_fail` will remain consistent over time.
 
 ## 2.0 Dataset Analysis
