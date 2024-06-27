@@ -6,6 +6,13 @@ their features, and loan characteristics.
 The problem is significant as it can help financial institutions identify potential defaulters and take preventive 
 measures to minimize losses.
 
+### 1.1 Assumptions
+
+During the development of the Loan Repayment Failure Prediction project, the following assumptions were made:
+
+1. The dataset provided is representative of the target population.
+2. The relationships and patterns identified in the dataset between borrower characteristics, loan features, and the target variable `repay_fail` will remain consistent over time.
+
 ## 2.0 Dataset Analysis
 ### 2.1 Initial Data Inspection
 
