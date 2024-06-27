@@ -11,9 +11,18 @@ measures to minimize losses.
 During the development of the Loan Repayment Failure Prediction project, the following assumptions were made:
 
 1. The dataset provided is representative of the target population.
-2. The relationships and patterns identified in the dataset between borrower characteristics, loan features, and the target variable `repay_fail` will remain consistent over time.
+2. All data are true and fre from human input errors.
+3. The relationships and patterns identified in the dataset between borrower characteristics, loan features, and the target variable `repay_fail` will remain consistent over time.
 
 ## 2.0 Dataset Analysis
+
+For review, the following are the datasets used/generated for the AI/ML Development.
+
+1. Raw dataset : [data/loan_default_data.xlsx](data/loan_default_data.xlsx)
+2. Preprocessed Dataset : [data/loan_cleaned_data.csv](data/loan_cleaned_data.csv)
+3. Training Dataset : [data/train_data.csv](data/train_data.csv)
+4. Testing Dataset : [data/test_data.csv](data/test_data.csv)
+
 ### 2.1 Initial Data Inspection
 
 The dataset contains 38,480 unique rows and 36 columns, including borrower characteristics, loan 
