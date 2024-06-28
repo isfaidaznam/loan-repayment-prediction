@@ -13,6 +13,7 @@ During the development of the Loan Repayment Failure Prediction project, the fol
 1. The dataset provided is representative of the target population.
 2. All data are true and free from human error.
 3. The relationships and patterns identified in the dataset between borrower characteristics, loan features, and the target variable `repay_fail` will remain consistent over time.
+4. Due to limitations of the dataset, all borrower are assumed to be similar cost of living. Hence, the effect of Country of living, time of living (loan application), currencies used, and life styles were ignored. 
 
 ## 2.0 Dataset Analysis
 
