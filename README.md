@@ -196,15 +196,32 @@ python 01_data_analysis.py
 
 ### 2.3 Data Preprocessing
 
-Before begin to train the AI models, data preprocessing needs to be done. In this project, 5 main data processing steps had be done.
+Before training AI models, data preprocessing is a crucial step that cannot be overlooked.
+Raw data is often noisy, inconsistent, and incomplete, which can lead to inaccurate models, biased results, and poor performance.
+Data preprocessing is necessary to ensure that the data is in a suitable format for modeling, and to prevent the garbage-in-garbage-out phenomenon.
 
-- Feature Extraction
-- Transformation
-- Handling Missing Value
-- Normalisation
+In this project, 5 main data processing steps were undertaken to prepare the data for modeling:
+- Feature Extraction 
+- Transformation 
+- Handling Missing Value 
+- Normalisation 
 - Remove Irrelevant Column
 
+By performing these steps, we can improve the quality of the data, reduce the risk of errors, and increase the chances 
+of building accurate and reliable AI models.
+
 #### 2.3.1 Feature Extraction
+
+Column extraction is a crucial step in data preparation. 
+A column may contain a lot of hidden attributes. 
+Column extraction helps to simplify these hidden attributes into a formatted manner, making it easier for computers to 
+understand and process the data. 
+In other words, column extraction is the process of transforming raw data into more meaningful and structured features 
+that can be used in machine learning models or other data analysis techniques. 
+This involves identifying patterns, relationships, or underlying structures within the data and representing them in a 
+more concise and interpretable way. 
+By doing so, column extraction enables data analysts and scientists to uncover insights, identify trends, and make more 
+accurate predictions.
 
 The list of generated column are as below, along with their decriptions
 
@@ -234,6 +251,15 @@ def extract_meet_credit_policy(loan_status):
 ```
 
 #### 2.3.2 Transformation
+
+Categorical data is a type of data that can be divided into categories, like colors, sizes, or types. 
+However, many computer programs can't understand categorical data directly, so it needs to be changed into a format that they can understand. 
+This is called Data Transformation. 
+Assigning a number to each category does this. 
+For example, the number 1 might be assigned to "red", 2 to "blue", and 3 to "green". 
+This way, the computer can do math with the data and understand it better. 
+There are different ways to transform categorical data, like one-hot encoding, label encoding, and ordinal encoding. 
+These methods help to convert categorical data into numerical data, which can be used in machine learning algorithms.
 
 ##### 2.3.2.1 Transform Categorical Numeric Data into Numerical Data
 
@@ -372,6 +398,21 @@ def transform_address_state(state):
 ```
 
 #### 2.3.3 Handling Missing Value
+
+Handling missing values is a critical step in data preprocessing
+Missing values, also known as null or NaN (Not a Number) values, occur when there is no data available for a particular feature or observation. 
+These missing values can significantly impact the accuracy and reliability of machine learning models, leading to biased 
+results, poor performance, and incorrect conclusions. 
+Handling missing values is essential because it allows for:
+- Prevention of models ignoring or misinterpreting missing values, which can lead to inaccurate predictions
+- Reduction of the risk of overfitting or underfitting, which can occur when models are trained on incomplete data
+- Improvement of the overall quality and consistency of the data, enabling more reliable insights and decisions
+
+In this project, two approaches are employed to handle missing values: 
+- assigning a specific value to represent unknown values in numeric data
+- using a defined "other" category for categorical data. 
+
+The following sections provide more details on these methods, along with example code snippets.
 
 ##### 2.3.3.1 Handling Missing Value in Numeric data
 
