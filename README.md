@@ -74,8 +74,11 @@ The dataset is imbalanced, with only 15.15% of instances labeled as failure (`re
 
 ### 2.2 Exploratory Data Analysis (EDA)
 EDA was conducted to understand the relationships between the features and the target variable.
-As the target variable is the `repay_fail`, repayment failure rate will be used to measure how bad the given situations are.
-The repayment Failure rate is calculated during data binning as
+As the target variable is the `repay_fail`, **repayment failure rate** will be used to measure how bad the given situations are.
+
+The **repayment failure rate** is a measure of the likelihood that a borrower will fail to repay their loan. 
+It is calculated by taking the mean of the repay_fail column after grouping the data by a particular feature. 
+The **repayment Failure rate** is calculated during data binning as
 ```python
 temp_df = temp_df.groupby(column_for_x_axis, observed=True)['failure_rate'].mean().reset_index()
 ```
@@ -86,9 +89,13 @@ In a string of 0's and 1's, the percentage of 1's is the same as the mean.
 Example, if we have a column with values [0, 0, 1, 1, 0, 1], 
 the mean of this column would be **(0 + 0 + 1 + 1 + 0 + 1) /6 = 0.5**, which is equivalent to a repayment failure rate of where **3/6 = 0.5**.
 
-This method is used to have more understanding on the probability to fail the repayment given a case.
-For example, later in the analysis, it was known that failure rate of a person if owns a home, is about 15.58%.
-The higher failure rate, the more probable for it to fail repayment.
+The failure rate of borrowers who own a home can be calculated by grouping the data by the home_ownership 
+feature and then calculating the mean of the repay_fail column for that group.
+
+The resulting failure rate can be interpreted as the probability that a borrower with that particular feature will fail 
+to repay their loan. 
+For example, if the failure rate for borrowers who own a home is 15.58%, this means that out of all borrowers who own a 
+home, 15.58% are expected to fail to repay their loan.
 
 The following insights were gained:
 
