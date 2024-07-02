@@ -883,7 +883,7 @@ Model interpretability techniques can be applied to extract insights from the tr
 The trained model can be deployed in a production environment to make real-time predictions on new loan applications.
 Continuous monitoring and evaluation of the model's performance can help ensure its accuracy and effectiveness over time.
 
-### 5.7 The Trained AI Model Becomes Irrelevant at Use
+### 5.7 The Trained AI Model are Doomed to Be Irrelevant at Use
 
 Once the trained model is used as intended, all other future outcomes becomes irrelevant.
 Future data must not be used to train or evolve future AI Models for the same intention.
@@ -925,7 +925,7 @@ Additionally, ANN model achieve an over the top accuracy of 98.16%.
 Based on these results, the ANN model is the best choice for Loan Repayment Failure Prediction Model.
 
 For future works, it is recommended to start addressing class imbalance, exploring temporal data, model selection, hyperparameter 
-tuning, model interpretability, and deployment and monitoring. 
+tuning, model interpretability, deployment and monitoring, and adding `preventive_measure_taken` column. 
 These improvements can help enhance the model's performance, provide better insights, and 
 ensure its effectiveness in a production environment.
 
