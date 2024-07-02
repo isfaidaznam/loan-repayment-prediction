@@ -883,6 +883,20 @@ Model interpretability techniques can be applied to extract insights from the tr
 The trained model can be deployed in a production environment to make real-time predictions on new loan applications.
 Continuous monitoring and evaluation of the model's performance can help ensure its accuracy and effectiveness over time.
 
+### 5.7 The Trained AI Model Becomes Irrelevant at Use
+
+Once the trained model is used as intended, all other future outcomes becomes irrelevant.
+Future data must not be used to train or evolve future AI Models for the same intention.
+Unless, a new column named `preventive_measure_taken` is implemented as one of the feature inputs.
+
+This is help the AI model to be aware of one of the key feature to predict failure repayment.
+As the trained AI Model able to predict loan repayment failure, financial institutions can take preventive measured to prevent financial losses.
+A supposedly failed repayment borrower may turn out to be successful repayment as a results of said preventive measures.
+Without the new `preventive_measure_taken` feature, the training data may falsely treat them as success instead of failure to repay. 
+
+The following `preventive_measure_taken` feature could store as a categorical column, where the types of preventive measure could be analysed for future decision-making.
+Furthermore, storing as multiple types of preventive measure instead of binary true false column may give more contexts to the AI model in development. 
+
 ## 6.0 Summary
 
 In this project, two AI/ML models were developed to predict loan repayment failure using a historical dataset of borrowers, 
